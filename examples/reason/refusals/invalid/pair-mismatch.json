@@ -1,0 +1,10 @@
+{
+  "base": "../valid/swap-rejected-market-closed.json",
+  "set": {
+    "/code": 409
+  },
+  "expect": {
+    "keyword": "anyOf",
+    "instancePath": ""
+  }
+}

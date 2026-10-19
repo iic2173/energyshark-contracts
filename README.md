@@ -91,7 +91,10 @@ Generada desde `x-amqp` por `npm run render:table`; el CI verifica que esté al 
 <!-- amqp-table:start -->
 | `type` | exchange | routing key | emisor | receptores | `user_id` | cerrado/abierto | schema |
 | --- | --- | --- | --- | --- | --- | --- | --- |
+| `ack` | `energy.x` | `city.{CODE} \| central` | central, city | `city.{CODE}`, `central` | obligatorio | central cerrado, ciudad abierto | [amqp/ack.schema.json](schemas/amqp/ack.schema.json) |
 | `distance-table` | `energy.x` | `city.{CODE}` | central | `city.{CODE}` | no | cerrado | [amqp/distance-table.schema.json](schemas/amqp/distance-table.schema.json) |
+| `error` | `energy.x` | `city.{CODE}` | central | `city.{CODE}` | no | cerrado | [amqp/error.schema.json](schemas/amqp/error.schema.json) |
+| `nack` | `energy.x` | `city.{CODE} \| central` | central, city | `city.{CODE}`, `central` | obligatorio | central cerrado, ciudad abierto | [amqp/nack.schema.json](schemas/amqp/nack.schema.json) |
 <!-- amqp-table:end -->
 
 ## Desarrollo

@@ -1,0 +1,10 @@
+{
+  "base": "../valid/market-closed.json",
+  "set": {
+    "": "PRICE_ABOVE_CAP"
+  },
+  "expect": {
+    "keyword": "oneOf",
+    "instancePath": ""
+  }
+}

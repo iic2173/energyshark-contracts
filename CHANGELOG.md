@@ -11,3 +11,10 @@ fecha.
 - `wallet/jwks` y `wallet.openapi.yaml` con `GET /.well-known/jwks.json`.
 - `index.schema.json` (`ContractRoot`), `lib/validator.mjs` (`createValidator`, `SCHEMA_BASE`)
   y las suites de CI.
+- `reason/reason`: los 25 `reason` vigentes, con `code`, portadores y emisores;
+  `reason/refusals`: los pares (`reason`, `code`) por portador (`nack`, `error`,
+  `bid-rejected`, `swap-rejected`, `http`).
+- `amqp/ack` y `amqp/nack` (variante de la central, cerrada, y de una ciudad, abierta) y
+  `amqp/error` (sólo la central; `data.opensAt` obligatorio en `REPORT_TOO_EARLY`).
+  `data.cycleId` de `nack` y `error` es opcional, de a lo sumo 64 caracteres.
+- `common/city-sender`.
