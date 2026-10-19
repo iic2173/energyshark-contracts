@@ -1,0 +1,10 @@
+{
+  "base": "../valid/cor.json",
+  "set": {
+    "": "cor"
+  },
+  "expect": {
+    "keyword": "pattern",
+    "instancePath": ""
+  }
+}

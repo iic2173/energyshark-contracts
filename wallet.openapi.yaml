@@ -1,0 +1,49 @@
+openapi: 3.1.0
+info:
+  title: Wallet EnergyShark
+  version: 3.0.0
+  description: >-
+    API REST de la wallet de EnergyShark (E2, protocolo v3). Transcribe la "Referencia de la
+    API v3" del curso; los cuerpos se describen con los schemas JSON de este repositorio
+    (`schemas/`), y en caso de diferencia con cualquier texto, mandan los schemas.
+servers:
+  - url: https://wallet.iic2173.org/v1
+security:
+  - apiKey: []
+components:
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key
+      description: Clave de la ciudad. Va en todas las llamadas salvo el JWKS.
+paths:
+  /.well-known/jwks.json:
+    servers:
+      - url: https://wallet.iic2173.org
+        description: El JWKS vive fuera de /v1.
+    get:
+      operationId: getJwks
+      summary: Claves públicas de la wallet
+      description: >-
+        Claves públicas con las que cualquier ciudad verifica la firma del token de un swap sin
+        llamar a la wallet. No requiere `X-Api-Key`.
+      security: []
+      responses:
+        '200':
+          description: El conjunto de claves públicas vigentes.
+          content:
+            application/json:
+              schema:
+                $ref: ./schemas/wallet/jwks.schema.json
+              examples:
+                unaClave:
+                  summary: Una clave pública EC P-256
+                  value:
+                    keys:
+                      - kty: EC
+                        crv: P-256
+                        alg: ES256
+                        kid: wallet-2026-10
+                        x: mubPo5NAxU_N3aRgmwL9X9pmfDBMdJZ4LXU6GmyX8JA
+                        y: FZ5ScgCHiK4EGu2xYEd94v7NjVKSH-mKL3JeRMdea6U

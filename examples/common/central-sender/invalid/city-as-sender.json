@@ -1,0 +1,10 @@
+{
+  "base": "../valid/central.json",
+  "set": {
+    "/sender": "COR"
+  },
+  "expect": {
+    "keyword": "const",
+    "instancePath": "/sender"
+  }
+}

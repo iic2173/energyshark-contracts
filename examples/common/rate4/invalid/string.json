@@ -1,0 +1,10 @@
+{
+  "base": "../valid/transport-cost.json",
+  "set": {
+    "": "0.0034"
+  },
+  "expect": {
+    "keyword": "type",
+    "instancePath": ""
+  }
+}

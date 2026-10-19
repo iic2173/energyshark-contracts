@@ -1,0 +1,10 @@
+{
+  "base": "../valid/request.json",
+  "unset": [
+    "/msgId"
+  ],
+  "expect": {
+    "keyword": "required",
+    "instancePath": ""
+  }
+}

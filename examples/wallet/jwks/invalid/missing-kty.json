@@ -1,0 +1,10 @@
+{
+  "base": "../valid/one-ec-key.json",
+  "unset": [
+    "/keys/0/kty"
+  ],
+  "expect": {
+    "keyword": "required",
+    "instancePath": "/keys/0"
+  }
+}

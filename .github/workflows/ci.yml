@@ -1,0 +1,28 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request: {}
+
+permissions:
+  contents: read
+
+jobs:
+  contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      # node --test: schemas, ejemplos válidos e inválidos, raíz de tipos, catálogo de reason y
+      # OpenAPI (validado contra el schema oficial de OAS 3.1 copiado en vendor/).
+      - run: npm test
+      - run: npm run check:table
+      - name: el tag coincide con la versión de package.json
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: test "v$(node -p "require('./package.json').version")" = "$GITHUB_REF_NAME"

@@ -1,0 +1,10 @@
+{
+  "base": "../valid/distance-table-message.json",
+  "set": {
+    "/message/type": "negotiation-proposal"
+  },
+  "expect": {
+    "keyword": "anyOf",
+    "instancePath": "/message"
+  }
+}

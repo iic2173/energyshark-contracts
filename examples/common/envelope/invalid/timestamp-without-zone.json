@@ -1,0 +1,10 @@
+{
+  "base": "../valid/request.json",
+  "set": {
+    "/timestamp": "2026-10-20 14:00:12"
+  },
+  "expect": {
+    "keyword": "format",
+    "instancePath": "/timestamp"
+  }
+}

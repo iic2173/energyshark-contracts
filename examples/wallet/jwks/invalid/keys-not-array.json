@@ -1,0 +1,10 @@
+{
+  "base": "../valid/one-ec-key.json",
+  "set": {
+    "/keys": "EC"
+  },
+  "expect": {
+    "keyword": "type",
+    "instancePath": "/keys"
+  }
+}

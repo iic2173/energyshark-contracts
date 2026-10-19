@@ -1,0 +1,35 @@
+{
+  "name": "@iic2173/energyshark-contracts",
+  "version": "3.0.0",
+  "private": true,
+  "description": "Contratos de EnergyShark E2 (protocolo v3): schemas JSON 2020-12 de cada mensaje AMQP, el catálogo de reason y el OpenAPI 3.1 de la wallet, con ejemplos verificados en CI.",
+  "license": "UNLICENSED",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iic2173/energyshark-contracts.git"
+  },
+  "exports": {
+    "./package.json": "./package.json",
+    "./validator": "./lib/validator.mjs",
+    "./schemas/*": "./schemas/*",
+    "./wallet.openapi.yaml": "./wallet.openapi.yaml"
+  },
+  "_comment_private": "private: true sólo impide un npm publish accidental; instalar desde git (github:iic2173/energyshark-contracts#vX.Y.Z) lo ignora.",
+  "_comment_scripts": "Sin prepare/install/preinstall/postinstall a propósito: correrían en la instalación de cada equipo que dependa de este repo.",
+  "scripts": {
+    "test": "node --test",
+    "render:table": "node scripts/render-amqp-table.mjs",
+    "check:table": "node scripts/render-amqp-table.mjs --check"
+  },
+  "dependencies": {
+    "ajv": "8.20.0",
+    "ajv-formats": "3.0.1"
+  },
+  "devDependencies": {
+    "yaml": "2.9.1"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.iic2173.org/energyshark/v3/index.schema.json",
+  "title": "ContractRoot",
+  "description": "Raíz para generar tipos: alcanza cada mensaje AMQP a través de `AnyMessage` y cada catálogo a través de una propiedad. Cada raíz que un generador de tipos necesita se alcanza por una entrada de `properties`, porque una entrada de `$defs` que es sólo un `$ref` no se emite como tipo. No describe un mensaje que viaje por el broker.",
+  "type": "object",
+  "properties": {
+    "message": { "$ref": "#/$defs/AnyMessage" }
+  },
+  "$defs": {
+    "AnyMessage": {
+      "title": "AnyMessage",
+      "description": "Cualquier mensaje AMQP de este contrato.",
+      "anyOf": [
+        { "$ref": "amqp/distance-table.schema.json" }
+      ]
+    }
+  }
+}

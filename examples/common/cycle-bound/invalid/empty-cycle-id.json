@@ -1,0 +1,10 @@
+{
+  "base": "../valid/cycle.json",
+  "set": {
+    "/cycleId": ""
+  },
+  "expect": {
+    "keyword": "minLength",
+    "instancePath": "/cycleId"
+  }
+}
