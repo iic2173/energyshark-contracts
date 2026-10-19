@@ -24,6 +24,15 @@
           "$ref": "amqp/ack.schema.json"
         },
         {
+          "$ref": "amqp/bid-accepted.schema.json"
+        },
+        {
+          "$ref": "amqp/bid-rejected.schema.json"
+        },
+        {
+          "$ref": "amqp/bid.schema.json"
+        },
+        {
           "$ref": "amqp/distance-table.schema.json"
         },
         {
@@ -40,6 +49,12 @@
         },
         {
           "$ref": "amqp/negotiation-report.schema.json"
+        },
+        {
+          "$ref": "amqp/offer-updated.schema.json"
+        },
+        {
+          "$ref": "amqp/offer-withdrawn.schema.json"
         },
         {
           "$ref": "amqp/offer.schema.json"
