@@ -98,6 +98,7 @@ Generada desde `x-amqp` por `npm run render:table`; el CI verifica que esté al 
 | `market-closed` | `market` | `market.closed` | central | `market.{CODE} (todas)` | no | cerrado | [amqp/market-closed.schema.json](schemas/amqp/market-closed.schema.json) |
 | `nack` | `energy.x` | `city.{CODE} \| central` | central, city | `city.{CODE}`, `central` | obligatorio | central cerrado, ciudad abierto | [amqp/nack.schema.json](schemas/amqp/nack.schema.json) |
 | `negotiation-report` | `energy.x` | `central` | city | `central` | obligatorio | abierto | [amqp/negotiation-report.schema.json](schemas/amqp/negotiation-report.schema.json) |
+| `offer` | `market` | `market.offer.{CODE}` | city | `market.{CODE} (todas)` | obligatorio | abierto | [amqp/offer.schema.json](schemas/amqp/offer.schema.json) |
 | `request` | `energy.x` | `central` | city | `central` | obligatorio | abierto | [amqp/request.schema.json](schemas/amqp/request.schema.json) |
 | `status-statement` | `energy.x` | `city.{CODE}` | central | `city.{CODE}` | no | cerrado | [amqp/status-statement.schema.json](schemas/amqp/status-statement.schema.json) |
 | `swap-cancelled` | `energy.x` | `city.{CODE}` | wallet | `city.{proponente}` | no | cerrado | [amqp/swap-cancelled.schema.json](schemas/amqp/swap-cancelled.schema.json) |

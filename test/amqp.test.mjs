@@ -74,7 +74,7 @@ describe('amqp/', () => {
     assert.deepEqual(failures, []);
   });
 
-  test('todo mensaje que una ciudad publica en el exchange market usa market.offer.{CODE} (vacía hasta que existan las ofertas)', () => {
+  test('todo mensaje que una ciudad publica en el exchange market usa market.offer.{CODE}', () => {
     const failures = [];
     for (const { rel, schema } of amqp) {
       const x = schema['x-amqp'] ?? {};
