@@ -345,7 +345,23 @@ describe('wallet.openapi.yaml', () => {
     if (EXHAUSTIVE) {
       for (const id of Object.keys(EXPECTED_OPERATIONS)) if (!present.has(id)) failures.push(`falta la operación ${id}`);
     }
-    assert.ok(present.has('proposeSwap'), 'falta proposeSwap');
+    for (const id of ['proposeSwap', 'acceptSwap', 'cancelSwap', 'getSwap']) assert.ok(present.has(id), `falta ${id}`);
+    assert.deepEqual(failures, []);
+  });
+
+  test('(e) cada ruta con {swapId} declara el parámetro de path swapId; accept y cancel no llevan cuerpo', () => {
+    const failures = [];
+    let checked = 0;
+    for (const { route, method, op } of operations()) {
+      if (!route.includes('{swapId}')) continue;
+      checked += 1;
+      const where = `${method.toUpperCase()} ${route}`;
+      const params = [...(doc.paths[route].parameters ?? []), ...(op.parameters ?? [])].map((p) => deref(p));
+      const swapId = params.filter((p) => p?.name === 'swapId' && p.in === 'path');
+      if (swapId.length !== 1 || swapId[0].required !== true) failures.push(`${where}: debe declarar exactamente un parámetro de path swapId obligatorio`);
+      if (method === 'post' && op.requestBody) failures.push(`${where}: no lleva cuerpo de request`);
+    }
+    assert.ok(checked >= 3, 'faltan las rutas con {swapId}: la prueba no probaría nada');
     assert.deepEqual(failures, []);
   });
 

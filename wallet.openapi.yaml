@@ -42,6 +42,18 @@ components:
         type: string
         format: uuid
       example: 3b9e6c1a-8d2f-4b57-a0e4-6f1c9d3b7a28
+    SwapId:
+      name: swapId
+      in: path
+      required: true
+      description: >-
+        Identificador del swap: un UUID aleatorio que no se adivina; quien lo tiene es porque
+        alguien se lo dio (el proponente lo recibe en `swap-proposed` y se lo entrega al
+        comprador en el `bid-accepted`).
+      schema:
+        type: string
+        minLength: 1
+      example: 0b6f2d9e-4c1a-4e87-9f3b-5a2d8c7e1f40
   headers:
     RetryAfter:
       description: Segundos que hay que esperar antes de reintentar.
@@ -126,6 +138,47 @@ components:
                 code: 503
                 data:
                   message: wallet busy; nothing was accepted, retry with the same Idempotency-Key
+    NotFound:
+      description: >-
+        `SWAP_UNKNOWN`: no existe un swap con ese `swapId`. En una escritura, no se ejecutó
+        nada.
+      content:
+        application/json:
+          schema:
+            $ref: ./schemas/wallet/http-error.schema.json
+          examples:
+            swapUnknown:
+              summary: swapId desconocido
+              value:
+                reason: SWAP_UNKNOWN
+                code: 404
+                data:
+                  message: swap not found
+                  swapId: 0b6f2d9e-4c1a-4e87-9f3b-5a2d8c7e1f40
+    UnprocessableSwapAction:
+      description: >-
+        `MALFORMED_REQUEST` (la petición no cumple su forma, por ejemplo una `Idempotency-Key`
+        que no es un UUID) o `IDEMPOTENCY_MISMATCH` (la misma `Idempotency-Key` ya se usó con
+        una petición distinta, por ejemplo sobre otro `swapId`). No se ejecutó nada.
+      content:
+        application/json:
+          schema:
+            $ref: ./schemas/wallet/http-error.schema.json
+          examples:
+            malformedRequest:
+              summary: Petición inválida
+              value:
+                reason: MALFORMED_REQUEST
+                code: 422
+                data:
+                  message: Idempotency-Key must be a UUID
+            idempotencyMismatch:
+              summary: Misma llave, petición distinta
+              value:
+                reason: IDEMPOTENCY_MISMATCH
+                code: 422
+                data:
+                  message: Idempotency-Key already used with a different payload
     WriteAccepted:
       description: >-
         Aceptado: la petición es válida en su forma. `202` significa aceptado, nunca hecho; el
@@ -181,6 +234,23 @@ components:
                         held: 0
                       KWH:
                         available: 7300
+                        held: 0
+            cancelado:
+              summary: Ya cancelado por el proponente
+              value:
+                swapId: swp-77
+                status: cancelled
+                lastEvent:
+                  type: swap-cancelled
+                  data:
+                    swapId: swp-77
+                    idpk: 7f2e9b4d-1a6c-4d83-b0e5-8c3a6f1d9b42
+                    balancesAfter:
+                      CR:
+                        available: 1800000
+                        held: 0
+                      KWH:
+                        available: 20000
                         held: 0
 paths:
   /swaps:
@@ -240,6 +310,178 @@ paths:
           $ref: '#/components/responses/RateLimited'
         '503':
           $ref: '#/components/responses/WalletBusy'
+  /swaps/{swapId}/accept:
+    post:
+      operationId: acceptSwap
+      summary: Aceptar un swap al portador
+      description: >-
+        Acepta un swap al portador. Puede aceptarlo cualquier ciudad que tenga el `swapId`,
+        salvo el proponente (`swap-rejected` `SELF_SWAP`). La wallet no verifica el token al
+        aceptar, porque el `swapId` basta: verificarlo antes es responsabilidad del comprador. La
+        wallet retiene `take` del aceptante (en `CR`, hasta `available + creditLine`) y, en una
+        sola transacción, liquida ambas patas: emite `swap-settled` a ambas partes. Si el
+        aceptante no tiene `take`, nada se mueve en ninguna pata: `swap-rejected`
+        `INSUFFICIENT_ASSET` al aceptante y al proponente, cuya retención se libera. Un swap ya
+        resuelto es `SWAP_NOT_PROPOSED`; uno vencido, `SWAP_EXPIRED`; uno que involucra `KWH`
+        fuera del horario en que ese activo está habilitado, `MARKET_CLOSED`. No lleva cuerpo.
+      parameters:
+        - $ref: '#/components/parameters/SwapId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '202':
+          $ref: '#/components/responses/WriteAccepted'
+        '200':
+          $ref: '#/components/responses/WriteReplay'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessableSwapAction'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '503':
+          $ref: '#/components/responses/WalletBusy'
+  /swaps/{swapId}/cancel:
+    post:
+      operationId: cancelSwap
+      summary: Cancelar una propuesta propia
+      description: >-
+        Cancela una propuesta propia aún no aceptada y libera la retención de `give`: emite
+        `swap-cancelled` al proponente. Sólo el proponente puede cancelar (otra ciudad recibe
+        `swap-rejected` `NOT_PROPOSER`); un swap ya resuelto es `SWAP_NOT_PROPOSED`. No lleva
+        cuerpo.
+      parameters:
+        - $ref: '#/components/parameters/SwapId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '202':
+          $ref: '#/components/responses/WriteAccepted'
+        '200':
+          $ref: '#/components/responses/WriteReplay'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessableSwapAction'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '503':
+          $ref: '#/components/responses/WalletBusy'
+  /swaps/{swapId}:
+    get:
+      operationId: getSwap
+      summary: Estado de un swap
+      description: >-
+        Estado actual del swap y su último evento, con el mismo cuerpo que el `200` de una
+        escritura repetida. Puede leerlo cualquier ciudad que tenga el `swapId`. La verdad del
+        resultado son los eventos en `city.{CODE}`; esta lectura es lo que la wallet sabe ahora.
+      parameters:
+        - $ref: '#/components/parameters/SwapId'
+      responses:
+        '200':
+          description: >-
+            El estado del swap. `lastEvent` no viene mientras el swap no tenga eventos (estado
+            `accepted`).
+          content:
+            application/json:
+              schema:
+                $ref: ./schemas/wallet/swap-state.schema.json
+              examples:
+                propuesto:
+                  summary: Propuesto, con la retención de give hecha
+                  value:
+                    swapId: swp-77
+                    status: proposed
+                    lastEvent:
+                      type: swap-proposed
+                      data:
+                        swapId: swp-77
+                        idpk: 3b9e6c1a-8d2f-4b57-a0e4-6f1c9d3b7a28
+                        proposer: HGW
+                        give:
+                          asset: KWH
+                          amount: 7300
+                        take:
+                          asset: CR
+                          amount: 2409000
+                        memo: HGW-9431
+                        expiresAt: '2026-10-20T14:06:42Z'
+                        token: eyJhbGciOiJFUzI1NiIs...
+                        balancesAfter:
+                          CR:
+                            available: 1800000
+                            held: 0
+                          KWH:
+                            available: 12700
+                            held: 7300
+                liquidado:
+                  summary: Liquidado
+                  value:
+                    swapId: swp-77
+                    status: settled
+                    lastEvent:
+                      type: swap-settled
+                      data:
+                        swapId: swp-77
+                        idpk: c01d5e8a-2f7b-4d39-9a6c-1e4b8f2d7c50
+                        proposer: HGW
+                        acceptor: COR
+                        give:
+                          asset: KWH
+                          amount: 7300
+                        take:
+                          asset: CR
+                          amount: 2409000
+                        memo: HGW-9431
+                        settledAt: '2026-10-20T14:06:14.118Z'
+                        balancesAfter:
+                          CR:
+                            available: 1791000
+                            held: 0
+                          KWH:
+                            available: 7300
+                            held: 0
+                vencido:
+                  summary: Vencido sin aceptación
+                  value:
+                    swapId: swp-77
+                    status: expired
+                    lastEvent:
+                      type: swap-expired
+                      data:
+                        swapId: swp-77
+                        balancesAfter:
+                          CR:
+                            available: 1800000
+                            held: 0
+                          KWH:
+                            available: 20000
+                            held: 0
+                rechazado:
+                  summary: Rechazado al proponer, por falta de give
+                  value:
+                    swapId: swp-78
+                    status: rejected
+                    lastEvent:
+                      type: swap-rejected
+                      reason: INSUFFICIENT_ASSET
+                      code: 402
+                      data:
+                        swapId: swp-78
+                        idpk: 2b7e4a9c-6d1f-4e38-8c5b-0f3a7d2e9b61
+                        operation: propose
+                        message: KWH available 4200, required 6000
+                        asset: KWH
+                        available: 4200
+                        required: 6000
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
   /.well-known/jwks.json:
     servers:
       - url: https://wallet.iic2173.org
