@@ -23,3 +23,9 @@ fecha.
   negativos).
 - `common/retired-type`: `negotiation-proposal`, `give`, `take`, `demand-statement`
   (`transfer` sigue vigente para el financiamiento).
+- `amqp/status-statement`: el de la E1 con `data.energy.sellable` (kWh enteros,
+  `floor(max(0, generationCapacity - consumption))`) y el bloque `data.market` (`buybackPrice`,
+  `imbalancePrice`, `minBid`, los cinco instantes del ciclo y `limits` con exactamente
+  `marketOpsPerMinute`, `walletWritesPerMinute` y `walletReadsPerMinute`).
+- Fragmentos comunes: `common/cr` (créditos, `number` con `x-decimals: 2`), `common/kwh`
+  (entero) y `common/instant` (ISO 8601 UTC).

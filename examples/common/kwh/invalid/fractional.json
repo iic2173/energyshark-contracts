@@ -1,0 +1,10 @@
+{
+  "base": "../valid/whole.json",
+  "set": {
+    "": 7300.5
+  },
+  "expect": {
+    "keyword": "type",
+    "instancePath": ""
+  }
+}

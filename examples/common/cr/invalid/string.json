@@ -1,0 +1,10 @@
+{
+  "base": "../valid/seven-cents.json",
+  "set": {
+    "": "0.07"
+  },
+  "expect": {
+    "keyword": "type",
+    "instancePath": ""
+  }
+}

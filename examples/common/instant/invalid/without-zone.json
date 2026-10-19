@@ -1,0 +1,10 @@
+{
+  "base": "../valid/utc.json",
+  "set": {
+    "": "2026-10-20T14:05:00"
+  },
+  "expect": {
+    "keyword": "format",
+    "instancePath": ""
+  }
+}
