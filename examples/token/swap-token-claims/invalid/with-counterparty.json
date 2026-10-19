@@ -1,0 +1,10 @@
+{
+  "base": "../valid/reference-example.json",
+  "set": {
+    "/counterparty": "COR"
+  },
+  "expect": {
+    "keyword": "additionalProperties",
+    "instancePath": ""
+  }
+}

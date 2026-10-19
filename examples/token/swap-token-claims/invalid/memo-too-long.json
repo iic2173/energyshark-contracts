@@ -1,0 +1,10 @@
+{
+  "base": "../valid/reference-example.json",
+  "set": {
+    "/memo": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+  },
+  "expect": {
+    "keyword": "maxLength",
+    "instancePath": "/memo"
+  }
+}

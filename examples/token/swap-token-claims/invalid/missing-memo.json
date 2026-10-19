@@ -1,0 +1,10 @@
+{
+  "base": "../valid/reference-example.json",
+  "unset": [
+    "/memo"
+  ],
+  "expect": {
+    "keyword": "required",
+    "instancePath": ""
+  }
+}

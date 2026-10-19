@@ -1,0 +1,10 @@
+{
+  "base": "../valid/reference-example.json",
+  "set": {
+    "/iss": "central.energyshark"
+  },
+  "expect": {
+    "keyword": "const",
+    "instancePath": "/iss"
+  }
+}

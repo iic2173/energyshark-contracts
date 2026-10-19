@@ -62,6 +62,7 @@ schemas/
   reason/     catálogo de reason y sus pares (reason, code) por portador
   amqp/       un schema por mensaje AMQP
   wallet/     cuerpos de la API de la wallet
+  token/      claims del token de swap que firma la wallet
   index.schema.json   raíz para generar tipos (AnyMessage y catálogos)
 examples/<ruta del schema>/valid/*.json     ejemplos que deben validar
 examples/<ruta del schema>/invalid/*.json   mutaciones de un ejemplo válido que deben fallar
@@ -114,6 +115,26 @@ Generada desde `x-amqp` por `npm run render:table`; el CI verifica que esté al 
 | `trade-recorded` | `energy.x` | `city.{CODE}` | central | `city.{comprador}`, `city.{vendedor}` | no | cerrado | [amqp/trade-recorded.schema.json](schemas/amqp/trade-recorded.schema.json) |
 | `transfer` | `energy.x` | `city.{CODE}` | central | `city.{CODE}` | no | cerrado | [amqp/transfer.schema.json](schemas/amqp/transfer.schema.json) |
 <!-- amqp-table:end -->
+
+## El token
+
+Cada `swap-proposed` trae en `data.token` un JWT (ES256) firmado por la wallet, y el vendedor
+reenvía ese mismo token al comprador en `bid-accepted.data.swapToken`. Sus claims los describe
+[token/swap-token-claims.schema.json](schemas/token/swap-token-claims.schema.json): `iss`,
+`sub` (el `swapId`), `iat`, `exp` (enteros, segundos desde la época Unix), `proposer`,
+`give`, `take` y `memo`, ni uno más. El swap es al portador: el token no nombra contraparte.
+
+El schema valida la forma de los claims, no la firma. Antes de aceptar el swap, el comprador:
+
+1. verifica la firma contra `/.well-known/jwks.json` (ES256, la llave del `kid` del encabezado);
+2. comprueba que `sub` sea el `swapId` que recibió;
+3. comprueba que `proposer` sea el vendedor al que le envió el bid;
+4. comprueba que `give` y `take` sean, exactamente, lo que pidió al precio de la oferta;
+5. comprueba que `memo` sea la oferta;
+6. comprueba que `exp` esté en el futuro.
+
+Un token válido prueba que la wallet ya retiene esos kWh, pero no garantiza el swap: si otro
+acepta primero, la wallet responde `SWAP_NOT_PROPOSED`.
 
 ## Desarrollo
 

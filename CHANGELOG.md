@@ -45,3 +45,14 @@ fecha.
 - Fragmentos comunes: `common/asset-amount` (una pata de swap: `CR` con dos decimales o `KWH`
   entero, siempre positiva) y `common/balances-after` (`CR` y `KWH`, cada uno con `available` y
   `held`; los kWh enteros).
+- Mensajes del mercado, al exchange `market` con routing key `market.offer.{CODE}` y sin
+  `ack`: `amqp/offer` (`offerId`, `quantity` en kWh enteros, `pricePerEnergy`),
+  `amqp/offer-updated` (`remaining`) y `amqp/offer-withdrawn`.
+- Mensajes entre ciudades, a `city.{vendedor}` o `city.{comprador}` con `user_id`:
+  `amqp/bid` (sin precio; `quantity` en kWh enteros), `amqp/bid-accepted` (`amount`,
+  `swapId`, `swapToken`, `expiresAt`) y `amqp/bid-rejected` (`reason` y `code` del
+  portador `bid-rejected`; `data.available` obligatorio en `QUANTITY_UNAVAILABLE`).
+- `token/swap-token-claims`: los claims del token de swap, cerrados y sin contraparte (`iss`,
+  `sub`, `iat`, `exp`, `proposer`, `give`, `take`, `memo`); el ejemplo usa los
+  instantes de la Referencia de la API v3 (C10). `index.schema.json` lo alcanza en
+  `properties.swapTokenClaims`.

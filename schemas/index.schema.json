@@ -13,6 +13,9 @@
     },
     "retiredType": {
       "$ref": "common/retired-type.schema.json"
+    },
+    "swapTokenClaims": {
+      "$ref": "token/swap-token-claims.schema.json"
     }
   },
   "$defs": {
