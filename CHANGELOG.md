@@ -5,7 +5,7 @@ fecha.
 
 ## v3.0.0 (2026-10-19)
 
-Primera versión: transcripción de la "Referencia de la API v3" con las correcciones C1-C11 ya
+Primera versión: transcripción de la "Referencia de la API v3" con las correcciones C1-C12 ya
 publicadas en ella.
 
 Correcciones incorporadas:
@@ -32,6 +32,9 @@ Correcciones incorporadas:
   1792505202).
 - C11 (2026-10-18): `transfer.data.penalty` es el objeto `{ amount, forCycleId }` y no viene
   cuando no hay multa (ni en cero ni en `null`).
+- C12 (2026-10-19): en un `nack` o un `error`, `data.cycleId` devuelve el `cycleId` del mensaje
+  rechazado tal cual cuando es un string de a lo sumo 64 caracteres; si no lo traía, o no
+  cumple eso, la clave no viene.
 
 Contenido:
 
