@@ -1,0 +1,10 @@
+{
+  "base": "../valid/normal.json",
+  "set": {
+    "/data/budgetBalance": "131212.50"
+  },
+  "expect": {
+    "keyword": "type",
+    "instancePath": "/data/budgetBalance"
+  }
+}

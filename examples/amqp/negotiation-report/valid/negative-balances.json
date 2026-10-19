@@ -1,0 +1,12 @@
+{
+  "idpk": "f0b7fa66-83b8-42b1-862e-7bb6df696e99",
+  "msgId": "b9f31d19-c93b-4084-8ad8-71caba6f66f8",
+  "type": "negotiation-report",
+  "timestamp": "2026-10-20T14:18:02Z",
+  "cityId": "TAR",
+  "cycleId": "cycle-9431",
+  "data": {
+    "budgetBalance": -48210.75,
+    "energyBalance": -4700
+  }
+}

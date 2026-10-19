@@ -1,0 +1,12 @@
+{
+  "idpk": "47b001b3-aec0-410e-8371-92aecdfa805d",
+  "msgId": "a2671564-4d8b-46ec-878f-f12bb3d57b97",
+  "type": "request",
+  "timestamp": "2026-10-20T14:21:12Z",
+  "cityId": "COR",
+  "retry": 2,
+  "data": {
+    "ask": "status-statement",
+    "reason": "statement not received"
+  }
+}

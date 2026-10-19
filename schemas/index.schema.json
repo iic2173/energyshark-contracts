@@ -6,7 +6,8 @@
   "type": "object",
   "properties": {
     "message": { "$ref": "#/$defs/AnyMessage" },
-    "reason": { "$ref": "reason/reason.schema.json" }
+    "reason": { "$ref": "reason/reason.schema.json" },
+    "retiredType": { "$ref": "common/retired-type.schema.json" }
   },
   "$defs": {
     "AnyMessage": {
@@ -16,7 +17,9 @@
         { "$ref": "amqp/ack.schema.json" },
         { "$ref": "amqp/distance-table.schema.json" },
         { "$ref": "amqp/error.schema.json" },
-        { "$ref": "amqp/nack.schema.json" }
+        { "$ref": "amqp/nack.schema.json" },
+        { "$ref": "amqp/negotiation-report.schema.json" },
+        { "$ref": "amqp/request.schema.json" }
       ]
     }
   }

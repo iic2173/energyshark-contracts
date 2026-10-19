@@ -1,0 +1,10 @@
+{
+  "base": "../valid/normal.json",
+  "unset": [
+    "/data/energyBalance"
+  ],
+  "expect": {
+    "keyword": "required",
+    "instancePath": "/data"
+  }
+}

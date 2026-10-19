@@ -1,0 +1,10 @@
+{
+  "base": "../valid/give.json",
+  "set": {
+    "": "transfer"
+  },
+  "expect": {
+    "keyword": "enum",
+    "instancePath": ""
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "base": "../valid/status-statement.json",
+  "unset": [
+    "/cityId"
+  ],
+  "expect": {
+    "keyword": "required",
+    "instancePath": ""
+  }
+}

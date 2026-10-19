@@ -1,0 +1,14 @@
+{
+  "idpk": "a84d3ef5-3e32-42fb-8632-12ba4e4294fb",
+  "msgId": "fdbf80b5-ad6f-4f00-8bd5-f1a12a45103d",
+  "type": "negotiation-report",
+  "timestamp": "2026-10-20T14:18:40Z",
+  "cityId": "HGW",
+  "cycleId": "cycle-9431",
+  "nodeVersion": "2.0.1",
+  "data": {
+    "budgetBalance": 905000,
+    "energyBalance": 0,
+    "trades": 3
+  }
+}

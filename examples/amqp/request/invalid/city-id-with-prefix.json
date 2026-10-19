@@ -1,0 +1,10 @@
+{
+  "base": "../valid/status-statement.json",
+  "set": {
+    "/cityId": "city.COR"
+  },
+  "expect": {
+    "keyword": "pattern",
+    "instancePath": "/cityId"
+  }
+}

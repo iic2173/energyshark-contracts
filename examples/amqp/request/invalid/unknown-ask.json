@@ -1,0 +1,10 @@
+{
+  "base": "../valid/status-statement.json",
+  "set": {
+    "/data/ask": "transfer"
+  },
+  "expect": {
+    "keyword": "enum",
+    "instancePath": "/data/ask"
+  }
+}

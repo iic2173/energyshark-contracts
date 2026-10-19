@@ -1,0 +1,11 @@
+{
+  "idpk": "9ed9282c-6963-4a46-84b9-2462bcb5033c",
+  "msgId": "b71e4722-9e3d-4e4f-8980-3fc9d2694bd1",
+  "type": "request",
+  "timestamp": "2026-10-20T14:21:09Z",
+  "cityId": "COR",
+  "cycleId": "cycle-9430",
+  "data": {
+    "ask": "distance-table"
+  }
+}

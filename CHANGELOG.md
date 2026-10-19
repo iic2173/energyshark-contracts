@@ -18,3 +18,8 @@ fecha.
   `amqp/error` (sólo la central; `data.opensAt` obligatorio en `REPORT_TOO_EARLY`).
   `data.cycleId` de `nack` y `error` es opcional, de a lo sumo 64 caracteres.
 - `common/city-sender`.
+- `amqp/request` (`ask` es `status-statement` o `distance-table`; `cycleId` opcional e
+  ignorado; a lo sumo 10 por minuto) y `amqp/negotiation-report` (balances que pueden ser
+  negativos).
+- `common/retired-type`: `negotiation-proposal`, `give`, `take`, `demand-statement`
+  (`transfer` sigue vigente para el financiamiento).
