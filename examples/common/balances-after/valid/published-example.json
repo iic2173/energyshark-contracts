@@ -1,0 +1,10 @@
+{
+  "CR": {
+    "available": 1800000,
+    "held": 0
+  },
+  "KWH": {
+    "available": 12700,
+    "held": 7300
+  }
+}

@@ -100,6 +100,11 @@ Generada desde `x-amqp` por `npm run render:table`; el CI verifica que esté al 
 | `negotiation-report` | `energy.x` | `central` | city | `central` | obligatorio | abierto | [amqp/negotiation-report.schema.json](schemas/amqp/negotiation-report.schema.json) |
 | `request` | `energy.x` | `central` | city | `central` | obligatorio | abierto | [amqp/request.schema.json](schemas/amqp/request.schema.json) |
 | `status-statement` | `energy.x` | `city.{CODE}` | central | `city.{CODE}` | no | cerrado | [amqp/status-statement.schema.json](schemas/amqp/status-statement.schema.json) |
+| `swap-cancelled` | `energy.x` | `city.{CODE}` | wallet | `city.{proponente}` | no | cerrado | [amqp/swap-cancelled.schema.json](schemas/amqp/swap-cancelled.schema.json) |
+| `swap-expired` | `energy.x` | `city.{CODE}` | wallet | `city.{proponente}` | no | cerrado | [amqp/swap-expired.schema.json](schemas/amqp/swap-expired.schema.json) |
+| `swap-proposed` | `energy.x` | `city.{CODE}` | wallet | `city.{proponente}` | no | cerrado | [amqp/swap-proposed.schema.json](schemas/amqp/swap-proposed.schema.json) |
+| `swap-rejected` | `energy.x` | `city.{CODE}` | wallet | `city.{quien intentó la operación}`, `city.{proponente} (accept fallido)` | no | cerrado | [amqp/swap-rejected.schema.json](schemas/amqp/swap-rejected.schema.json) |
+| `swap-settled` | `energy.x` | `city.{CODE}` | wallet | `city.{proponente}`, `city.{aceptante}` | no | cerrado | [amqp/swap-settled.schema.json](schemas/amqp/swap-settled.schema.json) |
 | `trade-recorded` | `energy.x` | `city.{CODE}` | central | `city.{comprador}`, `city.{vendedor}` | no | cerrado | [amqp/trade-recorded.schema.json](schemas/amqp/trade-recorded.schema.json) |
 | `transfer` | `energy.x` | `city.{CODE}` | central | `city.{CODE}` | no | cerrado | [amqp/transfer.schema.json](schemas/amqp/transfer.schema.json) |
 <!-- amqp-table:end -->

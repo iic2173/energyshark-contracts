@@ -1,0 +1,10 @@
+{
+  "base": "../valid/published-example.json",
+  "unset": [
+    "/KWH"
+  ],
+  "expect": {
+    "keyword": "required",
+    "instancePath": ""
+  }
+}

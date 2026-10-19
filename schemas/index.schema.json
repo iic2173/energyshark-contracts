@@ -23,6 +23,11 @@
         { "$ref": "amqp/negotiation-report.schema.json" },
         { "$ref": "amqp/request.schema.json" },
         { "$ref": "amqp/status-statement.schema.json" },
+        { "$ref": "amqp/swap-cancelled.schema.json" },
+        { "$ref": "amqp/swap-expired.schema.json" },
+        { "$ref": "amqp/swap-proposed.schema.json" },
+        { "$ref": "amqp/swap-rejected.schema.json" },
+        { "$ref": "amqp/swap-settled.schema.json" },
         { "$ref": "amqp/trade-recorded.schema.json" },
         { "$ref": "amqp/transfer.schema.json" }
       ]

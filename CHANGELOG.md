@@ -37,3 +37,11 @@ fecha.
   el nivel superior y `data` siempre `{}` (C4).
 - `amqp/trade-recorded` y `amqp/imbalance-settlement`: kWh enteros (`quantity`, `kwhHeld`,
   `deficit`, `coverage`) y créditos con dos decimales; `deficit` redondeado hacia arriba (C6).
+- Eventos de la wallet que la central reenvía (`sender: "central"`, sin `cycleId`):
+  `amqp/swap-proposed`, `amqp/swap-settled`, `amqp/swap-cancelled`, `amqp/swap-expired` y
+  `amqp/swap-rejected`. Todos llevan `data.idpk` salvo `swap-expired` (C7); `swap-rejected` lleva
+  `reason` y `code` del portador `swap-rejected` y `data.operation`; los receptores de cada uno
+  van en `x-amqp` (C1, C2).
+- Fragmentos comunes: `common/asset-amount` (una pata de swap: `CR` con dos decimales o `KWH`
+  entero, siempre positiva) y `common/balances-after` (`CR` y `KWH`, cada uno con `available` y
+  `held`; los kWh enteros).

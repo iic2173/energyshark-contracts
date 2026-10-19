@@ -1,0 +1,10 @@
+{
+  "base": "../valid/published-example.json",
+  "set": {
+    "/KWH/held": -1
+  },
+  "expect": {
+    "keyword": "minimum",
+    "instancePath": "/KWH/held"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "base": "../valid/cr.json",
+  "set": {
+    "/asset": "USD"
+  },
+  "expect": {
+    "keyword": "oneOf",
+    "instancePath": ""
+  }
+}

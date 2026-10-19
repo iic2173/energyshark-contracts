@@ -1,0 +1,10 @@
+{
+  "base": "../valid/kwh.json",
+  "set": {
+    "/amount": 0
+  },
+  "expect": {
+    "keyword": "oneOf",
+    "instancePath": ""
+  }
+}
