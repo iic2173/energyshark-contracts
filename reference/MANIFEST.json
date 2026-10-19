@@ -1,0 +1,170 @@
+[
+  {
+    "file": "proponer-un-swap-1.json",
+    "schema": "wallet/propose-swap-request.schema.json",
+    "section": "Proponer un swap",
+    "fill": []
+  },
+  {
+    "file": "proponer-un-swap-2.json",
+    "schema": "wallet/write-accepted.schema.json",
+    "section": "Proponer un swap",
+    "fill": []
+  },
+  {
+    "file": "aceptar-1.json",
+    "schema": "wallet/write-accepted.schema.json",
+    "section": "Aceptar",
+    "fill": []
+  },
+  {
+    "file": "cuerpos-de-las-respuestas-1.json",
+    "schema": "wallet/swap-state.schema.json",
+    "section": "Cuerpos de las respuestas",
+    "fill": [
+      "id-truncado"
+    ]
+  },
+  {
+    "file": "cuerpos-de-las-respuestas-2.json",
+    "schema": "wallet/http-error.schema.json",
+    "section": "Cuerpos de las respuestas",
+    "fill": []
+  },
+  {
+    "file": "get-balance-1.json",
+    "schema": "wallet/balance.schema.json",
+    "section": "`GET /balance`",
+    "fill": []
+  },
+  {
+    "file": "asiento-del-statement-1.json",
+    "schema": "wallet/statement-page.schema.json#/$defs/StatementEntry",
+    "section": "Asiento del `/statement`",
+    "fill": [
+      "uuid",
+      "instante"
+    ]
+  },
+  {
+    "file": "get-leaderboard-1.json",
+    "schema": "wallet/leaderboard.schema.json",
+    "section": "`GET /leaderboard`",
+    "fill": []
+  },
+  {
+    "file": "wallet-eventos-1.json",
+    "schema": "amqp/swap-proposed.schema.json",
+    "section": "Wallet: eventos",
+    "fill": [
+      "id-truncado",
+      "envelope"
+    ]
+  },
+  {
+    "file": "wallet-eventos-2.json",
+    "schema": "amqp/swap-rejected.schema.json",
+    "section": "Wallet: eventos",
+    "fill": [
+      "id-truncado",
+      "envelope"
+    ]
+  },
+  {
+    "file": "el-token-1.json",
+    "schema": "token/swap-token-claims.schema.json",
+    "section": "El token",
+    "fill": []
+  },
+  {
+    "file": "mensajes-del-mercado-ciudad-exchange-market-1.json",
+    "schema": "amqp/offer.schema.json",
+    "section": "Mensajes del mercado (ciudad → exchange `market`)",
+    "fill": [
+      "envelope"
+    ]
+  },
+  {
+    "file": "mensajes-del-mercado-ciudad-exchange-market-2.json",
+    "schema": "amqp/offer-updated.schema.json",
+    "section": "Mensajes del mercado (ciudad → exchange `market`)",
+    "fill": [
+      "envelope"
+    ]
+  },
+  {
+    "file": "mensajes-del-mercado-ciudad-exchange-market-3.json",
+    "schema": "amqp/offer-withdrawn.schema.json",
+    "section": "Mensajes del mercado (ciudad → exchange `market`)",
+    "fill": [
+      "envelope"
+    ]
+  },
+  {
+    "file": "mensajes-del-mercado-ciudad-exchange-market-4.json",
+    "schema": "amqp/market-closed.schema.json",
+    "section": "Mensajes del mercado (ciudad → exchange `market`)",
+    "fill": [
+      "envelope"
+    ]
+  },
+  {
+    "file": "mensajes-entre-ciudades-ciudad-city-otra-1.json",
+    "schema": "amqp/bid.schema.json",
+    "section": "Mensajes entre ciudades (ciudad → `city.{OTRA}`)",
+    "fill": [
+      "envelope"
+    ]
+  },
+  {
+    "file": "mensajes-entre-ciudades-ciudad-city-otra-2.json",
+    "schema": "amqp/bid-accepted.schema.json",
+    "section": "Mensajes entre ciudades (ciudad → `city.{OTRA}`)",
+    "fill": [
+      "uuid",
+      "envelope"
+    ]
+  },
+  {
+    "file": "mensajes-entre-ciudades-ciudad-city-otra-3.json",
+    "schema": "amqp/bid-rejected.schema.json",
+    "section": "Mensajes entre ciudades (ciudad → `city.{OTRA}`)",
+    "fill": [
+      "uuid",
+      "envelope"
+    ]
+  },
+  {
+    "file": "status-statement-e1-extendido-1.json",
+    "schema": "amqp/status-statement.schema.json",
+    "section": "`status-statement` (E1, extendido)",
+    "fill": [
+      "envelope"
+    ]
+  },
+  {
+    "file": "transfer-de-financiamiento-e1-extendido-1.json",
+    "schema": "amqp/transfer.schema.json",
+    "section": "`transfer` de financiamiento (E1, extendido)",
+    "fill": [
+      "envelope"
+    ]
+  },
+  {
+    "file": "trade-recorded-1.json",
+    "schema": "amqp/trade-recorded.schema.json",
+    "section": "`trade-recorded`",
+    "fill": [
+      "envelope"
+    ]
+  },
+  {
+    "file": "imbalance-settlement-1.json",
+    "schema": "amqp/imbalance-settlement.schema.json",
+    "section": "`imbalance-settlement`",
+    "fill": [
+      "uuid",
+      "envelope"
+    ]
+  }
+]

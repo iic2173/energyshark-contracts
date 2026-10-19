@@ -1,0 +1,97 @@
+[
+  {
+    "reason": "TYPE_RETIRED",
+    "code": 410,
+    "emitter": "central, error"
+  },
+  {
+    "reason": "QUANTITY_UNAVAILABLE",
+    "code": 409,
+    "emitter": "vendedor, bid-rejected"
+  },
+  {
+    "reason": "OFFER_WITHDRAWN",
+    "code": 410,
+    "emitter": "vendedor, bid-rejected"
+  },
+  {
+    "reason": "BID_TOO_SMALL",
+    "code": 422,
+    "emitter": "vendedor, bid-rejected"
+  },
+  {
+    "reason": "MARKET_CLOSED",
+    "code": 410,
+    "emitter": "vendedor, bid-rejected; wallet, swap-rejected"
+  },
+  {
+    "reason": "SELF_TRADE",
+    "code": 422,
+    "emitter": "vendedor, bid-rejected"
+  },
+  {
+    "reason": "IDENTITY_MISMATCH",
+    "code": 403,
+    "emitter": "cualquier receptor, nack"
+  },
+  {
+    "reason": "INSUFFICIENT_ASSET",
+    "code": 402,
+    "emitter": "wallet, swap-rejected"
+  },
+  {
+    "reason": "SWAP_NOT_PROPOSED",
+    "code": 409,
+    "emitter": "wallet, swap-rejected"
+  },
+  {
+    "reason": "SWAP_EXPIRED",
+    "code": 410,
+    "emitter": "wallet, swap-rejected"
+  },
+  {
+    "reason": "NOT_PROPOSER",
+    "code": 403,
+    "emitter": "wallet, swap-rejected"
+  },
+  {
+    "reason": "SELF_SWAP",
+    "code": 422,
+    "emitter": "wallet, swap-rejected"
+  },
+  {
+    "reason": "SAME_ASSET",
+    "code": 422,
+    "emitter": "wallet, swap-rejected"
+  },
+  {
+    "reason": "SWAP_UNKNOWN",
+    "code": 404,
+    "emitter": "wallet, HTTP"
+  },
+  {
+    "reason": "MALFORMED_REQUEST",
+    "code": 422,
+    "emitter": "wallet, HTTP"
+  },
+  {
+    "reason": "IDEMPOTENCY_MISMATCH",
+    "code": 422,
+    "emitter": "wallet, HTTP"
+  },
+  {
+    "reason": "WALLET_BUSY",
+    "code": 503,
+    "emitter": "wallet, HTTP"
+  },
+  {
+    "reason": "RATE_LIMITED",
+    "code": 429,
+    "emitter": "wallet, HTTP"
+  },
+  {
+    "reason": "UNAUTHORIZED",
+    "code": 401,
+    "emitter": "wallet, HTTP"
+  }
+]

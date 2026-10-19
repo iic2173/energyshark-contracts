@@ -1,0 +1,18 @@
+{
+    "swapId": "swp-77",
+    "status": "settled",
+    "lastEvent": {
+        "type": "swap-settled",
+        "data": {
+            "swapId": "swp-77",
+            "idpk": "c01d0000-0000-4000-8000-000000000000",
+            "proposer": "HGW",
+            "acceptor": "COR",
+            "give": { "asset": "KWH", "amount": 7300 },
+            "take": { "asset": "CR", "amount": 2409000.00 },
+            "memo": "HGW-9431",
+            "settledAt": "2026-10-20T14:06:14.118Z",
+            "balancesAfter": { "CR": { "available": 1791000.00, "held": 0 }, "KWH": { "available": 7300, "held": 0 } }
+        }
+    }
+}

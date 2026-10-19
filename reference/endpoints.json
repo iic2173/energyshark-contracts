@@ -1,0 +1,34 @@
+[
+  {
+    "method": "POST",
+    "path": "/swaps"
+  },
+  {
+    "method": "POST",
+    "path": "/swaps/{swapId}/accept"
+  },
+  {
+    "method": "POST",
+    "path": "/swaps/{swapId}/cancel"
+  },
+  {
+    "method": "GET",
+    "path": "/swaps/{swapId}"
+  },
+  {
+    "method": "GET",
+    "path": "/balance"
+  },
+  {
+    "method": "GET",
+    "path": "/statement"
+  },
+  {
+    "method": "GET",
+    "path": "/leaderboard"
+  },
+  {
+    "method": "GET",
+    "path": "/.well-known/jwks.json"
+  }
+]

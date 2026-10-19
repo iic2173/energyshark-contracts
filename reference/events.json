@@ -1,0 +1,61 @@
+[
+  {
+    "event": "swap-proposed",
+    "keys": [
+      "swapId",
+      "idpk",
+      "proposer",
+      "give",
+      "take",
+      "memo",
+      "expiresAt",
+      "token",
+      "balancesAfter"
+    ],
+    "optional": []
+  },
+  {
+    "event": "swap-settled",
+    "keys": [
+      "swapId",
+      "idpk",
+      "proposer",
+      "acceptor",
+      "give",
+      "take",
+      "memo",
+      "settledAt",
+      "balancesAfter"
+    ],
+    "optional": []
+  },
+  {
+    "event": "swap-cancelled",
+    "keys": [
+      "swapId",
+      "idpk",
+      "balancesAfter"
+    ],
+    "optional": []
+  },
+  {
+    "event": "swap-expired",
+    "keys": [
+      "swapId",
+      "balancesAfter"
+    ],
+    "optional": []
+  },
+  {
+    "event": "swap-rejected",
+    "keys": [
+      "swapId",
+      "idpk",
+      "operation",
+      "message"
+    ],
+    "optional": [
+      "swapId"
+    ]
+  }
+]

@@ -3,8 +3,49 @@
 Una entrada por tag. Cada corrección del contrato publicado lleva su identificador `Cn` y su
 fecha.
 
-## Unreleased
+## v3.0.0 (2026-10-19)
 
+Primera versión: transcripción de la "Referencia de la API v3" con las correcciones C1-C11 ya
+publicadas en ella.
+
+Correcciones incorporadas:
+
+- C1 (2026-10-18): `swap-rejected` va a quien intentó la operación y, cuando falla un `accept`,
+  también al proponente del swap.
+- C2 (2026-10-18): `swap-expired` va sólo al proponente.
+- C3 (2026-10-18): una ciudad acepta un swap al portador cuyo `swapId` tenga, nunca uno propio.
+- C4 (2026-10-18): `market-closed` lleva `cycleId` en el nivel superior del envelope.
+- C5 (2026-10-18): `market-closed` se publica al exchange `market` con routing key
+  `market.closed`.
+- C6 (2026-10-18): `sellable` se redondea hacia abajo (`floor`) y el déficit hacia arriba
+  (`ceil`); ambos son kWh enteros.
+- C7 (2026-10-18): `data.idpk` en `swap-proposed`, `swap-settled`, `swap-cancelled` y
+  `swap-rejected`; no en `swap-expired`.
+- C8 (2026-10-18): `status-statement.data.market.limits` trae exactamente
+  `marketOpsPerMinute`, `walletWritesPerMinute` y `walletReadsPerMinute`; el límite de
+  `request/ask` (10 por minuto) es fijo y no viaja.
+- C9 (2026-10-18): se publican los cuerpos del `200` de una `Idempotency-Key` repetida y de
+  `GET /swaps/{swapId}` (`swapId`, `status`, `lastEvent`), la página de `GET /statement`
+  (`entries`, `nextCursor`), la fila de `GET /leaderboard` (`cityId`, `score`,
+  `cyclesComputed`, `position`) y el cuerpo de los errores HTTP.
+- C10 (2026-10-18): el ejemplo del token usa instantes de 2026 (`iat` 1792505172, `exp`
+  1792505202).
+- C11 (2026-10-18): `transfer.data.penalty` es el objeto `{ amount, forCycleId }` y no viene
+  cuando no hay multa (ni en cero ni en `null`).
+
+Contenido:
+
+- `wallet.openapi.yaml` con sus ocho operaciones: `POST /swaps`, `POST /swaps/{swapId}/accept`,
+  `POST /swaps/{swapId}/cancel`, `GET /swaps/{swapId}`, `GET /balance`, `GET /statement`,
+  `GET /leaderboard` y `GET /.well-known/jwks.json`; `Idempotency-Key` en cada escritura,
+  `Retry-After` en cada `429` y `503`, y un ejemplo validado en cada respuesta.
+- Los siete cuerpos de la wallet: `wallet/propose-swap-request`, `wallet/write-accepted` (el
+  `202`), `wallet/swap-state` (el `200` repetido y `GET /swaps/{swapId}`, con `status` y
+  `lastEvent`), `wallet/http-error` (`reason`, `code`, `data.message`), `wallet/balance`,
+  `wallet/statement-page` (con `StatementEntry`) y `wallet/leaderboard`.
+- `reference/`: cada ejemplo JSON y las tablas de `reason`, endpoints y eventos de la
+  Referencia publicada, extraídos por `scripts/extract-reference.mjs` y verificados contra los
+  schemas por `test/reference.test.mjs`.
 - `amqp/distance-table`: la tabla de rutas de la E1, con `disabledRouteTransportCost`.
 - Fragmentos comunes: `common/envelope`, `common/central-sender`, `common/cycle-bound`,
   `common/city-code`, `common/rate4`.

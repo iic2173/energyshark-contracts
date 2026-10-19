@@ -1,0 +1,28 @@
+{
+    "idpk": "11111111-1111-4111-8111-111111111111",
+    "msgId": "22222222-2222-4222-8222-222222222222",
+    "timestamp": "2026-10-20T14:06:14.000Z",
+    "type": "status-statement",
+    "cycleId": "cycle-9431",
+    "sender": "central",
+    "data": {
+        "energy": {
+            "generationCapacity": 1234512,
+            "consumption": 1444121,
+            "generationCost": 210,
+            "sellable": 0
+        },
+        "market": {
+            "buybackPrice": 220.5,
+            "imbalancePrice": 735,
+            "minBid": 500,
+            "opensAt": "2026-10-20T14:05:00Z",
+            "lastOfferAt": "2026-10-20T14:13:30Z",
+            "lastBidAt": "2026-10-20T14:14:00Z",
+            "closesAt": "2026-10-20T14:15:00Z",
+            "reportOpensAt": "2026-10-20T14:15:00Z",
+            "limits": { "marketOpsPerMinute": 60, "walletWritesPerMinute": 120, "walletReadsPerMinute": 300 }
+        },
+        "validUntil": "2026-10-20T14:20:00Z"
+    }
+}
