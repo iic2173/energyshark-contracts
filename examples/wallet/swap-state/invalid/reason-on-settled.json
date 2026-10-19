@@ -1,0 +1,11 @@
+{
+  "base": "../valid/settled.json",
+  "set": {
+    "/lastEvent/reason": "SWAP_EXPIRED",
+    "/lastEvent/code": 410
+  },
+  "expect": {
+    "keyword": "oneOf",
+    "instancePath": "/lastEvent"
+  }
+}

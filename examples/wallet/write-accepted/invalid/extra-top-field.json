@@ -1,0 +1,10 @@
+{
+  "base": "../valid/accepted.json",
+  "set": {
+    "/lastEvent": null
+  },
+  "expect": {
+    "keyword": "additionalProperties",
+    "instancePath": ""
+  }
+}

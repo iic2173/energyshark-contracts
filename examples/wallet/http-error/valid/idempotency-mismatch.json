@@ -1,0 +1,7 @@
+{
+  "reason": "IDEMPOTENCY_MISMATCH",
+  "code": 422,
+  "data": {
+    "message": "Idempotency-Key already used with a different payload"
+  }
+}

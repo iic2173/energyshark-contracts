@@ -1,0 +1,7 @@
+{
+  "reason": "MALFORMED_REQUEST",
+  "code": 422,
+  "data": {
+    "message": "memo is required"
+  }
+}

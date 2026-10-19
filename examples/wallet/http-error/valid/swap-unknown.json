@@ -1,0 +1,8 @@
+{
+  "reason": "SWAP_UNKNOWN",
+  "code": 404,
+  "data": {
+    "message": "swap not found",
+    "swapId": "0b6f2d9e-4c1a-4e87-9f3b-5a2d8c7e1f40"
+  }
+}

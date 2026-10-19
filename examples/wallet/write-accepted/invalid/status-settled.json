@@ -1,0 +1,10 @@
+{
+  "base": "../valid/accepted.json",
+  "set": {
+    "/status": "settled"
+  },
+  "expect": {
+    "keyword": "const",
+    "instancePath": "/status"
+  }
+}

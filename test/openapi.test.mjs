@@ -25,6 +25,17 @@
 //     `X-Api-Key`; los operationId son únicos; cada respuesta `application/json` usa un schema
 //     `$ref` bajo ./schemas/ y trae al menos un `examples`; `getJwks` declara `security: []`; y
 //     cada cuerpo de request tiene al menos una mutación inválida en examples/<schema>/invalid/.
+// (e) Las operaciones de la wallet: cada operación del documento está en EXPECTED_OPERATIONS
+//     (transcripción a mano de la mecánica §5.3 y de la Referencia de la API v3) con su método,
+//     su ruta y exactamente sus status; con EXHAUSTIVE, además, cada fila de la tabla existe en
+//     el documento, así que no se puede agregar ni quitar una operación (ni describir una
+//     operación interna) sin cambiar esta tabla. Cada escritura (POST) declara el parámetro
+//     Idempotency-Key (UUID, obligatorio) y ninguna lectura lo declara; cada 429 y 503 declara
+//     el header Retry-After; cada respuesta trae `application/json` con al menos un ejemplo (que
+//     el bloque (c) valida); el `code` de cada ejemplo de error es su status HTTP; toda operación
+//     salvo getJwks exige X-Api-Key. Y proposeSwap lleva exactamente los ejemplos `publicado` y
+//     `mismo-activo` (ninguno se puede borrar sin que esto falle), con las mutaciones de
+//     ProposeSwapRequest que el bloque (d) cuenta.
 
 import { describe, test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -264,12 +275,14 @@ describe('wallet.openapi.yaml', () => {
     assert.deepEqual(failures, []);
   });
 
-  test('(d) cada schema de cuerpo de request tiene al menos una mutación inválida (vacía hasta que exista el primer cuerpo de request)', () => {
+  test('(d) cada schema de cuerpo de request tiene al menos una mutación inválida', () => {
     const failures = [];
+    let bodies = 0;
     for (const [route, item] of Object.entries(doc.paths ?? {})) {
       for (const method of HTTP_METHODS) {
         const op = item[method];
         if (!op?.requestBody) continue;
+        bodies += 1;
         const body = deref(op.requestBody);
         for (const [media, mt] of Object.entries(body.content ?? {})) {
           const ref = mt.schema?.$ref;
@@ -283,6 +296,113 @@ describe('wallet.openapi.yaml', () => {
           if (invalid.length === 0) failures.push(`${where}: examples/${rel}/invalid/ no tiene mutaciones`);
         }
       }
+    }
+    assert.ok(bodies > 0, 'ninguna operación tiene cuerpo de request: la prueba no probaría nada');
+    assert.deepEqual(failures, []);
+  });
+
+  /** Operaciones de la wallet según la mecánica §5.3 y la Referencia de la API v3:
+   * operationId -> [método, ruta, status declarados]. */
+  const WRITE_STATUSES = ['200', '202', '401', '404', '422', '429', '503'];
+  const EXPECTED_OPERATIONS = {
+    proposeSwap: ['post', '/swaps', ['200', '202', '401', '422', '429', '503']],
+    acceptSwap: ['post', '/swaps/{swapId}/accept', WRITE_STATUSES],
+    cancelSwap: ['post', '/swaps/{swapId}/cancel', WRITE_STATUSES],
+    getSwap: ['get', '/swaps/{swapId}', ['200', '401', '404', '429']],
+    getBalance: ['get', '/balance', ['200', '401', '429']],
+    getStatement: ['get', '/statement', ['200', '401', '429']],
+    getLeaderboard: ['get', '/leaderboard', ['200', '401', '429']],
+    getJwks: ['get', '/.well-known/jwks.json', ['200']],
+  };
+  /** Con `true`, cada fila de EXPECTED_OPERATIONS debe existir en el documento. */
+  const EXHAUSTIVE = false;
+
+  function operations() {
+    const out = [];
+    for (const [route, item] of Object.entries(doc.paths ?? {})) {
+      for (const method of HTTP_METHODS) if (item[method]) out.push({ route, method, op: item[method] });
+    }
+    return out;
+  }
+
+  test('(e) cada operación del documento está en la tabla de la mecánica §5.3 con su método, ruta y status exactos', () => {
+    const failures = [];
+    const present = new Set();
+    for (const { route, method, op } of operations()) {
+      const where = `${method.toUpperCase()} ${route}`;
+      const row = EXPECTED_OPERATIONS[op.operationId];
+      if (!row) {
+        failures.push(`${where}: operationId ${op.operationId} no es una de las operaciones publicadas`);
+        continue;
+      }
+      present.add(op.operationId);
+      const [wantMethod, wantRoute, wantStatuses] = row;
+      if (method !== wantMethod || route !== wantRoute) failures.push(`${op.operationId}: está en ${where}, se espera ${wantMethod.toUpperCase()} ${wantRoute}`);
+      const got = Object.keys(op.responses ?? {}).sort();
+      const want = [...wantStatuses].sort();
+      if (JSON.stringify(got) !== JSON.stringify(want)) failures.push(`${op.operationId}: declara ${got.join(',')}, se espera ${want.join(',')}`);
+    }
+    if (EXHAUSTIVE) {
+      for (const id of Object.keys(EXPECTED_OPERATIONS)) if (!present.has(id)) failures.push(`falta la operación ${id}`);
+    }
+    assert.ok(present.has('proposeSwap'), 'falta proposeSwap');
+    assert.deepEqual(failures, []);
+  });
+
+  test('(e) escrituras con Idempotency-Key; 429 y 503 con Retry-After; cada respuesta JSON con ejemplo; code del error = status; X-Api-Key salvo getJwks', () => {
+    const failures = [];
+    for (const { route, method, op } of operations()) {
+      const where = `${method.toUpperCase()} ${route}`;
+      const params = (op.parameters ?? []).map((p) => deref(p));
+      const idem = params.filter((p) => p?.name === 'Idempotency-Key');
+      if (method === 'post') {
+        if (idem.length !== 1) failures.push(`${where}: una escritura declara exactamente un parámetro Idempotency-Key`);
+        else if (idem[0].in !== 'header' || idem[0].required !== true || idem[0].schema?.format !== 'uuid') {
+          failures.push(`${where}: Idempotency-Key debe ser un header obligatorio con formato uuid`);
+        }
+      } else if (idem.length > 0) failures.push(`${where}: una lectura no lleva Idempotency-Key`);
+      if (op.operationId !== 'getJwks' && op.security !== undefined && !op.security.some((s) => 'apiKey' in s)) {
+        failures.push(`${where}: debe exigir X-Api-Key`);
+      }
+      for (const [status, raw] of Object.entries(op.responses ?? {})) {
+        const response = deref(raw);
+        if (status === '429' || status === '503') {
+          const header = deref(response.headers?.['Retry-After']);
+          if (!header || header.required !== true) failures.push(`${where} ${status}: falta el header Retry-After obligatorio`);
+        }
+        const json = response.content?.['application/json'];
+        if (!json) {
+          failures.push(`${where} ${status}: sin cuerpo application/json`);
+          continue;
+        }
+        const examples = Object.entries(json.examples ?? {});
+        if (examples.length === 0) failures.push(`${where} ${status}: sin ejemplos`);
+        if (Number(status) >= 400) {
+          for (const [name, ex] of examples) {
+            const value = deref(ex).value;
+            if (value?.code !== Number(status)) failures.push(`${where} ${status}: el ejemplo ${name} tiene code ${value?.code}`);
+          }
+        }
+      }
+    }
+    assert.deepEqual(failures, []);
+  });
+
+  test('(e) proposeSwap lleva exactamente los ejemplos publicado y mismo-activo, y ProposeSwapRequest sus mutaciones', () => {
+    const failures = [];
+    const body = deref(doc.paths?.['/swaps']?.post?.requestBody);
+    const names = Object.keys(body?.content?.['application/json']?.examples ?? {}).sort();
+    if (JSON.stringify(names) !== JSON.stringify(['mismo-activo', 'publicado'])) {
+      failures.push(`proposeSwap: los ejemplos del cuerpo son ${names.join(',') || '(ninguno)'}, se espera mismo-activo,publicado`);
+    }
+    const dir = path.join(EXAMPLES_DIR, 'wallet', 'propose-swap-request');
+    const invalid = new Set(listFiles(path.join(dir, 'invalid'), (n) => n.endsWith('.json')));
+    for (const f of ['with-counterparty.json', 'fractional-kwh.json', 'missing-memo.json', 'empty-body.json']) {
+      if (!invalid.has(f)) failures.push(`examples/wallet/propose-swap-request/invalid/${f}: falta`);
+    }
+    const valid = new Set(listFiles(path.join(dir, 'valid'), (n) => n.endsWith('.json')));
+    for (const f of ['same-asset.json', 'empty-memo.json']) {
+      if (!valid.has(f)) failures.push(`examples/wallet/propose-swap-request/valid/${f}: falta`);
     }
     assert.deepEqual(failures, []);
   });

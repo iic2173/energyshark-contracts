@@ -1,0 +1,10 @@
+{
+  "base": "../valid/unauthorized.json",
+  "unset": [
+    "/data"
+  ],
+  "expect": {
+    "keyword": "required",
+    "instancePath": ""
+  }
+}

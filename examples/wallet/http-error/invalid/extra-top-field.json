@@ -1,0 +1,10 @@
+{
+  "base": "../valid/unauthorized.json",
+  "set": {
+    "/message": "X-Api-Key missing or invalid"
+  },
+  "expect": {
+    "keyword": "unevaluatedProperties",
+    "instancePath": ""
+  }
+}

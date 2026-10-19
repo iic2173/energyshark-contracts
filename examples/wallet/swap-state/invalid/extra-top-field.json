@@ -1,0 +1,10 @@
+{
+  "base": "../valid/settled.json",
+  "set": {
+    "/acceptor": "COR"
+  },
+  "expect": {
+    "keyword": "additionalProperties",
+    "instancePath": ""
+  }
+}

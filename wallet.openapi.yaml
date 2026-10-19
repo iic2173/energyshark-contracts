@@ -6,6 +6,16 @@ info:
     API REST de la wallet de EnergyShark (E2, protocolo v3). Transcribe la "Referencia de la
     API v3" del curso; los cuerpos se describen con los schemas JSON de este repositorio
     (`schemas/`), y en caso de diferencia con cualquier texto, mandan los schemas.
+
+
+    Las escrituras (`POST /swaps`, `/accept`, `/cancel`) son asíncronas: `202` significa
+    aceptado, nunca hecho, y el resultado llega después como evento a `city.{CODE}` de las
+    ciudades involucradas. Los eventos, no el status HTTP, son la verdad. Toda escritura lleva
+    `Idempotency-Key`: el reintento con la misma llave devuelve `200` con el estado actual del
+    swap sin ejecutar nada (que puede ser ya `settled`); la misma llave con un cuerpo distinto
+    es `422 IDEMPOTENCY_MISMATCH`; reintentar con una llave nueva es pedir otra operación. Un
+    `503 WALLET_BUSY` no aceptó nada, así que reintentar con la misma llave es seguro. Las
+    lecturas son inmediatas.
 servers:
   - url: https://wallet.iic2173.org/v1
 security:
@@ -17,7 +27,219 @@ components:
       in: header
       name: X-Api-Key
       description: Clave de la ciudad. Va en todas las llamadas salvo el JWKS.
+  parameters:
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      description: >-
+        UUID que elige la ciudad para esta operación; es su `idpk`, y vuelve como `data.idpk`
+        en los eventos que la operación cause. Reúsenlo en cada reintento de la misma
+        operación: la wallet responde `200` con el estado actual sin ejecutar nada. La misma
+        llave con un cuerpo distinto es `422 IDEMPOTENCY_MISMATCH`; una llave nueva es otra
+        operación.
+      schema:
+        type: string
+        format: uuid
+      example: 3b9e6c1a-8d2f-4b57-a0e4-6f1c9d3b7a28
+  headers:
+    RetryAfter:
+      description: Segundos que hay que esperar antes de reintentar.
+      required: true
+      schema:
+        type: integer
+        minimum: 0
+      example: 2
+  responses:
+    Unauthorized:
+      description: '`UNAUTHORIZED`: la clave `X-Api-Key` falta o es inválida.'
+      content:
+        application/json:
+          schema:
+            $ref: ./schemas/wallet/http-error.schema.json
+          examples:
+            unauthorized:
+              summary: Clave ausente o inválida
+              value:
+                reason: UNAUTHORIZED
+                code: 401
+                data:
+                  message: X-Api-Key missing or invalid
+    UnprocessableWrite:
+      description: >-
+        `MALFORMED_REQUEST` (el cuerpo no cumple su schema) o `IDEMPOTENCY_MISMATCH` (la misma
+        `Idempotency-Key` ya se usó con un cuerpo distinto). No se ejecutó nada.
+      content:
+        application/json:
+          schema:
+            $ref: ./schemas/wallet/http-error.schema.json
+          examples:
+            malformedRequest:
+              summary: Cuerpo inválido
+              value:
+                reason: MALFORMED_REQUEST
+                code: 422
+                data:
+                  message: memo is required
+            idempotencyMismatch:
+              summary: Misma llave, cuerpo distinto
+              value:
+                reason: IDEMPOTENCY_MISMATCH
+                code: 422
+                data:
+                  message: Idempotency-Key already used with a different payload
+    RateLimited:
+      description: >-
+        `RATE_LIMITED`: la ciudad superó su límite por minuto (los valores vigentes viajan en
+        `status-statement.data.market.limits`). Esperen lo que indica `Retry-After`.
+      headers:
+        Retry-After:
+          $ref: '#/components/headers/RetryAfter'
+      content:
+        application/json:
+          schema:
+            $ref: ./schemas/wallet/http-error.schema.json
+          examples:
+            rateLimited:
+              summary: Límite superado
+              value:
+                reason: RATE_LIMITED
+                code: 429
+                data:
+                  message: wallet write limit exceeded; retry after the Retry-After header
+    WalletBusy:
+      description: >-
+        `WALLET_BUSY`: nada se aceptó; reintentar con la misma `Idempotency-Key` es seguro,
+        después de lo que indica `Retry-After`.
+      headers:
+        Retry-After:
+          $ref: '#/components/headers/RetryAfter'
+      content:
+        application/json:
+          schema:
+            $ref: ./schemas/wallet/http-error.schema.json
+          examples:
+            walletBusy:
+              summary: Nada se aceptó
+              value:
+                reason: WALLET_BUSY
+                code: 503
+                data:
+                  message: wallet busy; nothing was accepted, retry with the same Idempotency-Key
+    WriteAccepted:
+      description: >-
+        Aceptado: la petición es válida en su forma. `202` significa aceptado, nunca hecho; el
+        resultado llegará como evento a `city.{CODE}`.
+      content:
+        application/json:
+          schema:
+            $ref: ./schemas/wallet/write-accepted.schema.json
+          examples:
+            swp-77:
+              summary: Escritura aceptada
+              value:
+                swapId: swp-77
+                status: accepted
+    WriteReplay:
+      description: >-
+        La misma `Idempotency-Key` ya es conocida: devuelve el estado actual del swap sin
+        ejecutar nada, con el cuerpo de `GET /swaps/{swapId}`. Puede no coincidir con lo que la
+        ciudad cree (por ejemplo, ya `settled` mientras su llamada anterior hacía timeout).
+      content:
+        application/json:
+          schema:
+            $ref: ./schemas/wallet/swap-state.schema.json
+          examples:
+            aun-sin-resolver:
+              summary: Aceptado y aún sin resolver (sin eventos todavía)
+              value:
+                swapId: swp-77
+                status: accepted
+            liquidado:
+              summary: Ya liquidado
+              value:
+                swapId: swp-77
+                status: settled
+                lastEvent:
+                  type: swap-settled
+                  data:
+                    swapId: swp-77
+                    idpk: c01d5e8a-2f7b-4d39-9a6c-1e4b8f2d7c50
+                    proposer: HGW
+                    acceptor: COR
+                    give:
+                      asset: KWH
+                      amount: 7300
+                    take:
+                      asset: CR
+                      amount: 2409000
+                    memo: HGW-9431
+                    settledAt: '2026-10-20T14:06:14.118Z'
+                    balancesAfter:
+                      CR:
+                        available: 1791000
+                        held: 0
+                      KWH:
+                        available: 7300
+                        held: 0
 paths:
+  /swaps:
+    post:
+      operationId: proposeSwap
+      summary: Proponer un swap al portador
+      description: >-
+        Propone un swap al portador: no nombra contraparte, y lo liquida quien primero lo
+        acepte teniendo el `take`. La wallet retiene `give` del proponente y emite
+        `swap-proposed` (con el token firmado) sólo al proponente; si no tiene `give`
+        disponible, emite `swap-rejected` `INSUFFICIENT_ASSET`. `give` y `take` del mismo
+        activo se aceptan con `202` y se resuelven como `swap-rejected` `SAME_ASSET`.
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ./schemas/wallet/propose-swap-request.schema.json
+            examples:
+              publicado:
+                summary: El ejemplo publicado (vender 7 300 kWh por 2 409 000 CR)
+                value:
+                  give:
+                    asset: KWH
+                    amount: 7300
+                  take:
+                    asset: CR
+                    amount: 2409000
+                  expiresAt: '2026-10-20T14:06:42Z'
+                  memo: HGW-9431
+              mismo-activo:
+                summary: CR por CR, válido en su forma
+                description: >-
+                  Válido en su forma: la wallet responde `202` y después emite `swap-rejected`
+                  `SAME_ASSET`. No es `422`.
+                value:
+                  give:
+                    asset: CR
+                    amount: 1000
+                  take:
+                    asset: CR
+                    amount: 1200.5
+                  expiresAt: '2026-10-20T14:09:47Z'
+                  memo: HGW-9432
+      responses:
+        '202':
+          $ref: '#/components/responses/WriteAccepted'
+        '200':
+          $ref: '#/components/responses/WriteReplay'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/UnprocessableWrite'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '503':
+          $ref: '#/components/responses/WalletBusy'
   /.well-known/jwks.json:
     servers:
       - url: https://wallet.iic2173.org

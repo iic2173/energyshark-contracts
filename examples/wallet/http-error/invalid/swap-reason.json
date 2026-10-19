@@ -1,0 +1,11 @@
+{
+  "base": "../valid/wallet-busy.json",
+  "set": {
+    "/reason": "INSUFFICIENT_ASSET",
+    "/code": 402
+  },
+  "expect": {
+    "keyword": "oneOf",
+    "instancePath": ""
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "base": "../valid/accepted-no-event.json",
+  "set": {
+    "/status": "pending"
+  },
+  "expect": {
+    "keyword": "enum",
+    "instancePath": "/status"
+  }
+}

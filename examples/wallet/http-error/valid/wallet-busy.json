@@ -1,0 +1,7 @@
+{
+  "reason": "WALLET_BUSY",
+  "code": 503,
+  "data": {
+    "message": "wallet busy; nothing was accepted, retry with the same Idempotency-Key"
+  }
+}

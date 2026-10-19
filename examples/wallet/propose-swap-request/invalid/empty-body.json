@@ -1,0 +1,10 @@
+{
+  "base": "../valid/published.json",
+  "set": {
+    "": {}
+  },
+  "expect": {
+    "keyword": "required",
+    "instancePath": ""
+  }
+}

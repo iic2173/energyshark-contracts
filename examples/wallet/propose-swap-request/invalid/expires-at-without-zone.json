@@ -1,0 +1,10 @@
+{
+  "base": "../valid/published.json",
+  "set": {
+    "/expiresAt": "2026-10-20T14:06:42"
+  },
+  "expect": {
+    "keyword": "format",
+    "instancePath": "/expiresAt"
+  }
+}

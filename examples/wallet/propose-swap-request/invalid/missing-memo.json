@@ -1,0 +1,10 @@
+{
+  "base": "../valid/published.json",
+  "unset": [
+    "/memo"
+  ],
+  "expect": {
+    "keyword": "required",
+    "instancePath": ""
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "base": "../valid/wallet-busy.json",
+  "set": {
+    "/code": 500
+  },
+  "expect": {
+    "keyword": "oneOf",
+    "instancePath": ""
+  }
+}

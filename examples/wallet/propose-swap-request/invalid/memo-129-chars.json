@@ -1,0 +1,10 @@
+{
+  "base": "../valid/published.json",
+  "set": {
+    "/memo": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+  },
+  "expect": {
+    "keyword": "maxLength",
+    "instancePath": "/memo"
+  }
+}

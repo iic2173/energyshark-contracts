@@ -1,0 +1,7 @@
+{
+  "reason": "RATE_LIMITED",
+  "code": 429,
+  "data": {
+    "message": "wallet write limit exceeded; retry after the Retry-After header"
+  }
+}

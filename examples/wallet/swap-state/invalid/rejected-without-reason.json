@@ -1,0 +1,11 @@
+{
+  "base": "../valid/rejected.json",
+  "unset": [
+    "/lastEvent/reason",
+    "/lastEvent/code"
+  ],
+  "expect": {
+    "keyword": "oneOf",
+    "instancePath": "/lastEvent"
+  }
+}

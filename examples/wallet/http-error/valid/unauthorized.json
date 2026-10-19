@@ -1,0 +1,7 @@
+{
+  "reason": "UNAUTHORIZED",
+  "code": 401,
+  "data": {
+    "message": "X-Api-Key missing or invalid"
+  }
+}

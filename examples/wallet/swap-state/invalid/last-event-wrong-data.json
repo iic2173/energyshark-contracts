@@ -1,0 +1,22 @@
+{
+  "base": "../valid/settled.json",
+  "set": {
+    "/lastEvent/data": {
+      "swapId": "swp-77",
+      "balancesAfter": {
+        "CR": {
+          "available": 1800000,
+          "held": 0
+        },
+        "KWH": {
+          "available": 20000,
+          "held": 0
+        }
+      }
+    }
+  },
+  "expect": {
+    "keyword": "oneOf",
+    "instancePath": "/lastEvent"
+  }
+}
