@@ -4,6 +4,12 @@
 // schemas con `oneOf`) es igual al nombre de su archivo, de modo que la ruta del schema y el
 // valor que viaja por el broker no puedan separarse.
 //
+// También prueba las routing keys del exchange `market` (CTR-02, D-07, C5): `market-closed` se
+// publica a `market` con `market.closed`; ningún mensaje que envía una ciudad usa una routing key
+// bajo `market.closed` (así no puede chocar con un `market.offer.{CODE}`, y una ciudad no puede
+// hacerse pasar por el cierre); y todo mensaje que una ciudad publica en `market` usa
+// `market.offer.{CODE}`, la única routing key que el broker le permite allí.
+//
 // Qué no prueba: que los ejemplos validen (test/examples.test.mjs).
 
 import { describe, test } from 'node:test';
@@ -45,6 +51,35 @@ describe('amqp/', () => {
         const value = node.properties?.type?.const;
         if (value !== expected) failures.push(`${rel} (${where}): type const es ${JSON.stringify(value)}, se espera "${expected}"`);
       }
+    }
+    assert.deepEqual(failures, []);
+  });
+
+  test('market-closed se publica al exchange market con routing key market.closed (D-07, C5)', () => {
+    const s = amqp.find((x) => x.rel === 'amqp/market-closed.schema.json');
+    assert.ok(s, 'falta schemas/amqp/market-closed.schema.json');
+    assert.equal(s.schema['x-amqp']?.exchange, 'market');
+    assert.equal(s.schema['x-amqp']?.routingKey, 'market.closed');
+  });
+
+  test('ningún mensaje que envía una ciudad usa una routing key bajo market.closed (CTR-02)', () => {
+    const failures = [];
+    for (const { rel, schema } of amqp) {
+      const x = schema['x-amqp'] ?? {};
+      if (!(x.sender ?? []).includes('city')) continue;
+      for (const key of String(x.routingKey ?? '').split('|').map((k) => k.trim())) {
+        if (key.startsWith('market.closed')) failures.push(`${rel}: la routing key ${key} queda bajo market.closed`);
+      }
+    }
+    assert.deepEqual(failures, []);
+  });
+
+  test('todo mensaje que una ciudad publica en el exchange market usa market.offer.{CODE} (vacía hasta que existan las ofertas)', () => {
+    const failures = [];
+    for (const { rel, schema } of amqp) {
+      const x = schema['x-amqp'] ?? {};
+      if (x.exchange !== 'market' || !(x.sender ?? []).includes('city')) continue;
+      if (x.routingKey !== 'market.offer.{CODE}') failures.push(`${rel}: routing key ${x.routingKey}, se espera market.offer.{CODE}`);
     }
     assert.deepEqual(failures, []);
   });

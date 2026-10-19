@@ -94,10 +94,14 @@ Generada desde `x-amqp` por `npm run render:table`; el CI verifica que esté al 
 | `ack` | `energy.x` | `city.{CODE} \| central` | central, city | `city.{CODE}`, `central` | obligatorio | central cerrado, ciudad abierto | [amqp/ack.schema.json](schemas/amqp/ack.schema.json) |
 | `distance-table` | `energy.x` | `city.{CODE}` | central | `city.{CODE}` | no | cerrado | [amqp/distance-table.schema.json](schemas/amqp/distance-table.schema.json) |
 | `error` | `energy.x` | `city.{CODE}` | central | `city.{CODE}` | no | cerrado | [amqp/error.schema.json](schemas/amqp/error.schema.json) |
+| `imbalance-settlement` | `energy.x` | `city.{CODE}` | central | `city.{CODE}` | no | cerrado | [amqp/imbalance-settlement.schema.json](schemas/amqp/imbalance-settlement.schema.json) |
+| `market-closed` | `market` | `market.closed` | central | `market.{CODE} (todas)` | no | cerrado | [amqp/market-closed.schema.json](schemas/amqp/market-closed.schema.json) |
 | `nack` | `energy.x` | `city.{CODE} \| central` | central, city | `city.{CODE}`, `central` | obligatorio | central cerrado, ciudad abierto | [amqp/nack.schema.json](schemas/amqp/nack.schema.json) |
 | `negotiation-report` | `energy.x` | `central` | city | `central` | obligatorio | abierto | [amqp/negotiation-report.schema.json](schemas/amqp/negotiation-report.schema.json) |
 | `request` | `energy.x` | `central` | city | `central` | obligatorio | abierto | [amqp/request.schema.json](schemas/amqp/request.schema.json) |
 | `status-statement` | `energy.x` | `city.{CODE}` | central | `city.{CODE}` | no | cerrado | [amqp/status-statement.schema.json](schemas/amqp/status-statement.schema.json) |
+| `trade-recorded` | `energy.x` | `city.{CODE}` | central | `city.{comprador}`, `city.{vendedor}` | no | cerrado | [amqp/trade-recorded.schema.json](schemas/amqp/trade-recorded.schema.json) |
+| `transfer` | `energy.x` | `city.{CODE}` | central | `city.{CODE}` | no | cerrado | [amqp/transfer.schema.json](schemas/amqp/transfer.schema.json) |
 <!-- amqp-table:end -->
 
 ## Desarrollo

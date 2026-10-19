@@ -29,3 +29,11 @@ fecha.
   `marketOpsPerMinute`, `walletWritesPerMinute` y `walletReadsPerMinute`).
 - Fragmentos comunes: `common/cr` (créditos, `number` con `x-decimals: 2`), `common/kwh`
   (entero) y `common/instant` (ISO 8601 UTC).
+- `amqp/transfer`: el financiamiento del ciclo, con `data.balanceAfter` y `data.creditLine`;
+  `data.penalty` sólo como el objeto de la E1 `{ amount, forCycleId }` y ausente sin multa
+  (`"penalty": 0` y `"penalty": null` no validan, C11). El `transfer` como pago
+  (`data.becauseOf`) no valida.
+- `amqp/market-closed`: al exchange `market` con routing key `market.closed` (C5), `cycleId` en
+  el nivel superior y `data` siempre `{}` (C4).
+- `amqp/trade-recorded` y `amqp/imbalance-settlement`: kWh enteros (`quantity`, `kwhHeld`,
+  `deficit`, `coverage`) y créditos con dos decimales; `deficit` redondeado hacia arriba (C6).

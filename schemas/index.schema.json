@@ -17,10 +17,14 @@
         { "$ref": "amqp/ack.schema.json" },
         { "$ref": "amqp/distance-table.schema.json" },
         { "$ref": "amqp/error.schema.json" },
+        { "$ref": "amqp/imbalance-settlement.schema.json" },
+        { "$ref": "amqp/market-closed.schema.json" },
         { "$ref": "amqp/nack.schema.json" },
         { "$ref": "amqp/negotiation-report.schema.json" },
         { "$ref": "amqp/request.schema.json" },
-        { "$ref": "amqp/status-statement.schema.json" }
+        { "$ref": "amqp/status-statement.schema.json" },
+        { "$ref": "amqp/trade-recorded.schema.json" },
+        { "$ref": "amqp/transfer.schema.json" }
       ]
     }
   }
