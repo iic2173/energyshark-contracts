@@ -1,0 +1,10 @@
+{
+  "base": "../valid/with-next-cursor.json",
+  "set": {
+    "/entries/1/amount": 1.5
+  },
+  "expect": {
+    "keyword": "type",
+    "instancePath": "/entries/1/amount"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "base": "../valid/after-close.json",
+  "set": {
+    "/assets/CR": {
+      "available": 1791000,
+      "held": 0
+    }
+  },
+  "expect": {
+    "keyword": "required",
+    "instancePath": "/assets/CR"
+  }
+}

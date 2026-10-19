@@ -1,0 +1,10 @@
+{
+  "base": "../valid/last-page.json",
+  "set": {
+    "/total": 1
+  },
+  "expect": {
+    "keyword": "additionalProperties",
+    "instancePath": ""
+  }
+}

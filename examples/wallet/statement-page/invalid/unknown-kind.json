@@ -1,0 +1,10 @@
+{
+  "base": "../valid/with-next-cursor.json",
+  "set": {
+    "/entries/0/kind": "refund"
+  },
+  "expect": {
+    "keyword": "enum",
+    "instancePath": "/entries/0/kind"
+  }
+}

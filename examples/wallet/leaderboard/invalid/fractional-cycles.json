@@ -1,0 +1,10 @@
+{
+  "base": "../valid/published.json",
+  "set": {
+    "/cyclesComputed": 412.5
+  },
+  "expect": {
+    "keyword": "type",
+    "instancePath": "/cyclesComputed"
+  }
+}

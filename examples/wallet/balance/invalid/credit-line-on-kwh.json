@@ -1,0 +1,10 @@
+{
+  "base": "../valid/after-close.json",
+  "set": {
+    "/assets/KWH/creditLine": 1200000
+  },
+  "expect": {
+    "keyword": "additionalProperties",
+    "instancePath": "/assets/KWH"
+  }
+}

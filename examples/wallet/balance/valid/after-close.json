@@ -1,0 +1,19 @@
+{
+  "cityId": "COR",
+  "assets": {
+    "CR": {
+      "available": 1791000,
+      "held": 0,
+      "creditLine": 1200000
+    },
+    "KWH": {
+      "available": 7300,
+      "held": 0
+    }
+  },
+  "asOf": "2026-10-20T14:06:14.602Z",
+  "lastSettledCycle": "cycle-9430",
+  "balanceAtLastClose": {
+    "CR": 1150000
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "base": "../valid/last-page.json",
+  "set": {
+    "/entries/0/entryId": "uuid"
+  },
+  "expect": {
+    "keyword": "format",
+    "instancePath": "/entries/0/entryId"
+  }
+}

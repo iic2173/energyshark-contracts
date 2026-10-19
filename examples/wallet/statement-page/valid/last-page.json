@@ -1,0 +1,15 @@
+{
+  "entries": [
+    {
+      "entryId": "2f9b6d3e-1a8c-4e57-9c0b-4a7e2d6f1b85",
+      "cycleId": "cycle-9431",
+      "asset": "CR",
+      "kind": "funding",
+      "amount": 600000,
+      "counterparty": null,
+      "reference": "cycle-9431",
+      "createdAt": "2026-10-20T14:00:00.412Z"
+    }
+  ],
+  "nextCursor": null
+}

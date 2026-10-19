@@ -1,0 +1,10 @@
+{
+  "base": "../valid/published.json",
+  "set": {
+    "/position": 0
+  },
+  "expect": {
+    "keyword": "minimum",
+    "instancePath": "/position"
+  }
+}

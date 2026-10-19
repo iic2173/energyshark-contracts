@@ -27,8 +27,8 @@
 //     cada cuerpo de request tiene al menos una mutación inválida en examples/<schema>/invalid/.
 // (e) Las operaciones de la wallet: cada operación del documento está en EXPECTED_OPERATIONS
 //     (transcripción a mano de la mecánica §5.3 y de la Referencia de la API v3) con su método,
-//     su ruta y exactamente sus status; con EXHAUSTIVE, además, cada fila de la tabla existe en
-//     el documento, así que no se puede agregar ni quitar una operación (ni describir una
+//     su ruta y exactamente sus status, y cada fila de la tabla existe en el documento: son
+//     exactamente ocho, así que no se puede agregar ni quitar una operación (ni describir una
 //     operación interna) sin cambiar esta tabla. Cada escritura (POST) declara el parámetro
 //     Idempotency-Key (UUID, obligatorio) y ninguna lectura lo declara; cada 429 y 503 declara
 //     el header Retry-After; cada respuesta trae `application/json` con al menos un ejemplo (que
@@ -314,8 +314,6 @@ describe('wallet.openapi.yaml', () => {
     getLeaderboard: ['get', '/leaderboard', ['200', '401', '429']],
     getJwks: ['get', '/.well-known/jwks.json', ['200']],
   };
-  /** Con `true`, cada fila de EXPECTED_OPERATIONS debe existir en el documento. */
-  const EXHAUSTIVE = false;
 
   function operations() {
     const out = [];
@@ -342,10 +340,28 @@ describe('wallet.openapi.yaml', () => {
       const want = [...wantStatuses].sort();
       if (JSON.stringify(got) !== JSON.stringify(want)) failures.push(`${op.operationId}: declara ${got.join(',')}, se espera ${want.join(',')}`);
     }
-    if (EXHAUSTIVE) {
-      for (const id of Object.keys(EXPECTED_OPERATIONS)) if (!present.has(id)) failures.push(`falta la operación ${id}`);
+    for (const id of Object.keys(EXPECTED_OPERATIONS)) if (!present.has(id)) failures.push(`falta la operación ${id}`);
+    assert.equal(Object.keys(EXPECTED_OPERATIONS).length, 8, 'la mecánica §5.3 publica ocho operaciones');
+    assert.equal(operations().length, 8, `el documento declara ${operations().length} operaciones, se esperan las ocho publicadas`);
+    assert.deepEqual(failures, []);
+  });
+
+  test('(e) getStatement acepta exactamente cycleId, asset, cursor y limit, opcionales y con ejemplo; limit sin máximo publicado', () => {
+    const failures = [];
+    const op = doc.paths?.['/statement']?.get;
+    assert.ok(op, 'falta GET /statement');
+    const params = (op.parameters ?? []).map((p) => deref(p));
+    const names = params.map((p) => `${p.in}:${p.name}`).sort();
+    const want = ['query:asset', 'query:cursor', 'query:cycleId', 'query:limit'];
+    if (JSON.stringify(names) !== JSON.stringify(want)) failures.push(`declara ${names.join(',')}, se espera ${want.join(',')}`);
+    for (const p of params) {
+      if (p.required === true) failures.push(`${p.name}: debe ser opcional`);
+      if (!('example' in p)) failures.push(`${p.name}: sin example`);
     }
-    for (const id of ['proposeSwap', 'acceptSwap', 'cancelSwap', 'getSwap']) assert.ok(present.has(id), `falta ${id}`);
+    const limit = params.find((p) => p.name === 'limit');
+    if (limit && (limit.schema?.type !== 'integer' || limit.schema?.minimum !== 1 || 'maximum' in (limit.schema ?? {}))) {
+      failures.push('limit: entero, mínimo 1 y sin máximo (el máximo es configuración de la wallet)');
+    }
     assert.deepEqual(failures, []);
   });
 

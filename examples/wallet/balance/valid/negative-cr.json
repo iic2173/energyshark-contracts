@@ -1,0 +1,19 @@
+{
+  "cityId": "HGW",
+  "assets": {
+    "CR": {
+      "available": -350000.25,
+      "held": 120000,
+      "creditLine": 1200000
+    },
+    "KWH": {
+      "available": 0,
+      "held": 0
+    }
+  },
+  "asOf": "2026-10-20T14:20:41.009Z",
+  "lastSettledCycle": "cycle-9430",
+  "balanceAtLastClose": {
+    "CR": -95000.5
+  }
+}

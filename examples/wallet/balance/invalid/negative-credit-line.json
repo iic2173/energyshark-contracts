@@ -1,0 +1,10 @@
+{
+  "base": "../valid/after-close.json",
+  "set": {
+    "/assets/CR/creditLine": -1
+  },
+  "expect": {
+    "keyword": "minimum",
+    "instancePath": "/assets/CR/creditLine"
+  }
+}

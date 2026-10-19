@@ -482,6 +482,175 @@ paths:
           $ref: '#/components/responses/NotFound'
         '429':
           $ref: '#/components/responses/RateLimited'
+  /balance:
+    get:
+      operationId: getBalance
+      summary: Saldos propios
+      description: >-
+        Saldos propios por activo, disponibles y retenidos, con la línea de crédito en `CR`.
+        `CR` puede ser negativo: por swaps hasta `-creditLine`, y más allá por débitos de la
+        central. `KWH` no arrastra entre ciclos. `lastSettledCycle` y `balanceAtLastClose` son
+        `null` hasta el primer cierre de la ciudad.
+      responses:
+        '200':
+          description: Los saldos de la ciudad dueña de la clave.
+          content:
+            application/json:
+              schema:
+                $ref: ./schemas/wallet/balance.schema.json
+              examples:
+                tras-un-cierre:
+                  summary: El ejemplo publicado
+                  value:
+                    cityId: COR
+                    assets:
+                      CR:
+                        available: 1791000
+                        held: 0
+                        creditLine: 1200000
+                      KWH:
+                        available: 7300
+                        held: 0
+                    asOf: '2026-10-20T14:06:14.602Z'
+                    lastSettledCycle: cycle-9430
+                    balanceAtLastClose:
+                      CR: 1150000
+                antes-del-primer-cierre:
+                  summary: Antes del primer cierre de la ciudad
+                  value:
+                    cityId: COR
+                    assets:
+                      CR:
+                        available: 600000
+                        held: 0
+                        creditLine: 1200000
+                      KWH:
+                        available: 4200
+                        held: 0
+                    asOf: '2026-10-20T12:01:03.214Z'
+                    lastSettledCycle: null
+                    balanceAtLastClose: null
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+  /statement:
+    get:
+      operationId: getStatement
+      summary: Asientos propios, paginados
+      description: >-
+        Los asientos de la cuenta propia, del más nuevo al más antiguo, paginados. Para la página
+        siguiente, repitan la consulta con `cursor` igual al `nextCursor` recibido; `nextCursor`
+        es `null` en la última página. La referencia no especifica el orden entre asientos con el
+        mismo `createdAt`.
+      parameters:
+        - name: cycleId
+          in: query
+          required: false
+          description: Sólo los asientos de ese ciclo.
+          schema:
+            type: string
+            minLength: 1
+          example: cycle-9431
+        - name: asset
+          in: query
+          required: false
+          description: Sólo los asientos de ese activo.
+          schema:
+            enum:
+              - CR
+              - KWH
+          example: CR
+        - name: cursor
+          in: query
+          required: false
+          description: El `nextCursor` de la página anterior. Sin él, la primera página.
+          schema:
+            type: string
+            minLength: 1
+          example: eyJiZWZvcmUiOiIyMDI2LTEwLTIwVDE0OjA2OjE0LjExOFoifQ
+        - name: limit
+          in: query
+          required: false
+          description: >-
+            Asientos por página, al menos 1. El máximo es configuración de la wallet y no se
+            publica.
+          schema:
+            type: integer
+            minimum: 1
+          example: 50
+      responses:
+        '200':
+          description: Una página de asientos.
+          content:
+            application/json:
+              schema:
+                $ref: ./schemas/wallet/statement-page.schema.json
+              examples:
+                con-siguiente-pagina:
+                  summary: Una página con más asientos después
+                  value:
+                    entries:
+                      - entryId: 5d2a8f1c-3b7e-4c96-a0d4-9e6f2b1c8a37
+                        cycleId: cycle-9431
+                        asset: CR
+                        kind: swap
+                        amount: -2409000
+                        counterparty: HGW
+                        reference: swp-77
+                        createdAt: '2026-10-20T14:06:14.118Z'
+                      - entryId: 8c4e1b9a-6f2d-4a73-b5e8-1d0c7a3f9e62
+                        cycleId: cycle-9431
+                        asset: KWH
+                        kind: swap
+                        amount: 7300
+                        counterparty: HGW
+                        reference: swp-77
+                        createdAt: '2026-10-20T14:06:14.118Z'
+                    nextCursor: eyJiZWZvcmUiOiIyMDI2LTEwLTIwVDE0OjA2OjE0LjExOFoifQ
+                ultima-pagina:
+                  summary: La última página
+                  value:
+                    entries:
+                      - entryId: 2f9b6d3e-1a8c-4e57-9c0b-4a7e2d6f1b85
+                        cycleId: cycle-9431
+                        asset: CR
+                        kind: funding
+                        amount: 600000
+                        counterparty: null
+                        reference: cycle-9431
+                        createdAt: '2026-10-20T14:00:00.412Z'
+                    nextCursor: null
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+  /leaderboard:
+    get:
+      operationId: getLeaderboard
+      summary: Puntaje propio
+      description: >-
+        La fila propia de la tabla: `score`, ciclos computados y posición, sin desglose de las
+        demás ciudades. Se recalcula a cada cierre de ciclo.
+      responses:
+        '200':
+          description: El puntaje de la ciudad dueña de la clave.
+          content:
+            application/json:
+              schema:
+                $ref: ./schemas/wallet/leaderboard.schema.json
+              examples:
+                publicado:
+                  summary: Tercera de la tabla
+                  value:
+                    cityId: COR
+                    score: 0.0342
+                    cyclesComputed: 412
+                    position: 3
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
   /.well-known/jwks.json:
     servers:
       - url: https://wallet.iic2173.org

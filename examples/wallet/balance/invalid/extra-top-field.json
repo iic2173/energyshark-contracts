@@ -1,0 +1,10 @@
+{
+  "base": "../valid/after-close.json",
+  "set": {
+    "/balances": {}
+  },
+  "expect": {
+    "keyword": "additionalProperties",
+    "instancePath": ""
+  }
+}

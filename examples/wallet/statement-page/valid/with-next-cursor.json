@@ -1,0 +1,25 @@
+{
+  "entries": [
+    {
+      "entryId": "5d2a8f1c-3b7e-4c96-a0d4-9e6f2b1c8a37",
+      "cycleId": "cycle-9431",
+      "asset": "CR",
+      "kind": "swap",
+      "amount": -2409000,
+      "counterparty": "HGW",
+      "reference": "swp-77",
+      "createdAt": "2026-10-20T14:06:14.118Z"
+    },
+    {
+      "entryId": "8c4e1b9a-6f2d-4a73-b5e8-1d0c7a3f9e62",
+      "cycleId": "cycle-9431",
+      "asset": "KWH",
+      "kind": "swap",
+      "amount": 7300,
+      "counterparty": "HGW",
+      "reference": "swp-77",
+      "createdAt": "2026-10-20T14:06:14.118Z"
+    }
+  ],
+  "nextCursor": "eyJiZWZvcmUiOiIyMDI2LTEwLTIwVDE0OjA2OjE0LjExOFoifQ"
+}

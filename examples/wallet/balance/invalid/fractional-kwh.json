@@ -1,0 +1,10 @@
+{
+  "base": "../valid/after-close.json",
+  "set": {
+    "/assets/KWH/available": 7300.5
+  },
+  "expect": {
+    "keyword": "type",
+    "instancePath": "/assets/KWH/available"
+  }
+}

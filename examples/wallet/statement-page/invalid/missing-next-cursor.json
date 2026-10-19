@@ -1,0 +1,12 @@
+{
+  "base": "../valid/last-page.json",
+  "set": {
+    "": {
+      "entries": []
+    }
+  },
+  "expect": {
+    "keyword": "required",
+    "instancePath": ""
+  }
+}
