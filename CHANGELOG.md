@@ -3,6 +3,33 @@
 Una entrada por tag. Cada corrección del contrato publicado lleva su identificador `Cn` y su
 fecha.
 
+## v3.0.1 (2026-10-21)
+
+Parche de descripciones: sin cambios de forma. Ningún schema cambia un campo, un `required`,
+un `enum` ni un `reason`; todo ejemplo de v3.0.0 sigue validando.
+
+Correcciones incorporadas:
+
+- C16 (2026-10-21): la `distance-table` llega en el turno de la ciudad y otra vez cada vez que
+  su tabla cambia, con un `idpk` nuevo, y rige la última; cada ciclo la central deshabilita por
+  sorteo `routeDisablePerCycle` enlaces (1 por omisión), en ambos sentidos, hasta `closesAt`, y
+  el equipo docente puede deshabilitar o rehabilitar un enlace durante el mercado. El
+  `cycleId` de `trade-recorded` es el del mercado que contiene el `settledAt`, y su transporte
+  sale de la última `distance-table` publicada al comprador antes del `settledAt`.
+- C17 (2026-10-21): el asiento `funding` de `/statement` es el financiamiento bruto; la multa
+  es su propio asiento `penalty`, y `transfer.data.quantity` es el neto.
+- C18 (2026-10-21): en `imbalance-settlement`, con `coverage = 0` `pricePerEnergy` es
+  `buybackPrice` y `total` 0; una ciudad que la central no alcanzó en el ciclo no recibe
+  `imbalance-settlement`.
+- C20 (2026-10-21): cuando un `accept` falla con `INSUFFICIENT_ASSET`, la copia del
+  `swap-rejected` del aceptante trae `asset`, `available` y `required`, y la del proponente
+  `asset` y `required`; un `swap-cancelled` del cierre del mercado lleva en `data.idpk` la
+  `Idempotency-Key` de la central; `GET /swaps/{swapId}` muestra en
+  `lastEvent.data.balancesAfter` los saldos de quien lee; un `502` o un `504` en una escritura
+  de la wallet se reintenta con la misma `Idempotency-Key`.
+- C10 (2026-10-18): el ejemplo del token y su copia en `reference/` usan los instantes de la
+  mecánica (`iat` 1792507572, `exp` 1792507602).
+
 ## v3.0.0 (2026-10-19)
 
 Primera versión: transcripción de la "Referencia de la API v3" con las correcciones C1-C12 ya

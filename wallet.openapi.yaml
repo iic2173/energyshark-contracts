@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Wallet EnergyShark
-  version: 3.0.0
+  version: 3.0.1
   description: >-
     API REST de la wallet de EnergyShark (E2, protocolo v3). Transcribe la "Referencia de la
     API v3" del curso; los cuerpos se describen con los schemas JSON de este repositorio
@@ -14,8 +14,9 @@ info:
     `Idempotency-Key`: el reintento con la misma llave devuelve `200` con el estado actual del
     swap sin ejecutar nada (que puede ser ya `settled`); la misma llave con un cuerpo distinto
     es `422 IDEMPOTENCY_MISMATCH`; reintentar con una llave nueva es pedir otra operación. Un
-    `503 WALLET_BUSY` no aceptó nada, así que reintentar con la misma llave es seguro. Las
-    lecturas son inmediatas.
+    `503 WALLET_BUSY` no aceptó nada, así que reintentar con la misma llave es seguro. Un
+    `502` o un `504` en una escritura es una respuesta perdida de una operación que puede haber
+    sido aceptada: se reintenta con la misma `Idempotency-Key`. Las lecturas son inmediatas.
 servers:
   - url: https://wallet.iic2173.org/v1
 security:
@@ -37,7 +38,8 @@ components:
         en los eventos que la operación cause. Reúsenlo en cada reintento de la misma
         operación: la wallet responde `200` con el estado actual sin ejecutar nada. La misma
         llave con un cuerpo distinto es `422 IDEMPOTENCY_MISMATCH`; una llave nueva es otra
-        operación.
+        operación. Un `502` o un `504` es una respuesta perdida de una operación que puede haber
+        sido aceptada: reintenten con la misma llave.
       schema:
         type: string
         format: uuid
@@ -377,6 +379,8 @@ paths:
         Estado actual del swap y su último evento, con el mismo cuerpo que el `200` de una
         escritura repetida. Puede leerlo cualquier ciudad que tenga el `swapId`. La verdad del
         resultado son los eventos en `city.{CODE}`; esta lectura es lo que la wallet sabe ahora.
+        `lastEvent.data.balancesAfter` trae los saldos propios de quien lee, en el instante de la
+        lectura, nunca los de otra ciudad.
       parameters:
         - $ref: '#/components/parameters/SwapId'
       responses:

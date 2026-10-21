@@ -14,7 +14,7 @@
     },
     "lastEvent": {
       "title": "SwapLastEvent",
-      "description": "El último evento del swap, con el mismo `type` y el mismo `data` que el evento publicado en `city.{CODE}`; `reason` y `code` vienen sólo si el evento los lleva (`swap-rejected`). No viene mientras el swap no tenga eventos.",
+      "description": "El último evento del swap, con el mismo `type` y el mismo `data` que el evento publicado en `city.{CODE}`; `reason` y `code` vienen sólo si el evento los lleva (`swap-rejected`). No viene mientras el swap no tenga eventos. `lastEvent.data.balancesAfter` trae los saldos propios de la ciudad que lee, en el instante de la lectura, nunca los de otra ciudad.",
       "oneOf": [
         {
           "type": "object",

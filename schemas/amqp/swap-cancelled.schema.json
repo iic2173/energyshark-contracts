@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://contracts.iic2173.org/energyshark/v3/amqp/swap-cancelled.schema.json",
   "title": "SwapCancelled",
-  "description": "El proponente canceló la propuesta antes de que alguien la aceptara, y la retención de `give` se liberó. Va sólo al proponente. Evento de la wallet que la central reenvía a `city.{CODE}`, con `sender: \"central\"` y el envelope de la E1 (el `idpk` del envelope es el de este envío, como en todo mensaje). No lleva `cycleId`: la wallet no sabe de ciclos. `data.idpk` es igual a la `Idempotency-Key` de la operación que lo causó.",
+  "description": "El proponente canceló la propuesta antes de que alguien la aceptara, y la retención de `give` se liberó. Va sólo al proponente. Evento de la wallet que la central reenvía a `city.{CODE}`, con `sender: \"central\"` y el envelope de la E1 (el `idpk` del envelope es el de este envío, como en todo mensaje). No lleva `cycleId`: la wallet no sabe de ciclos. `data.idpk` es igual a la `Idempotency-Key` de la operación que lo causó. Un `swap-cancelled` causado por el cierre del mercado, cuando la central deshabilita `KWH`, lleva en `data.idpk` la `Idempotency-Key` de la operación de la central que deshabilitó `KWH`, que la ciudad no reconoce como propia.",
   "x-amqp": {
     "exchange": "energy.x",
     "routingKey": "city.{CODE}",

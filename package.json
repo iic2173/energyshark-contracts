@@ -1,6 +1,6 @@
 {
   "name": "@iic2173/energyshark-contracts",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "private": true,
   "description": "Contratos de EnergyShark E2 (protocolo v3): schemas JSON 2020-12 de cada mensaje AMQP, el catálogo de reason y el OpenAPI 3.1 de la wallet, con ejemplos verificados en CI.",
   "license": "UNLICENSED",

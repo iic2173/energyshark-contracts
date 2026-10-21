@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://contracts.iic2173.org/energyshark/v3/amqp/imbalance-settlement.schema.json",
   "title": "ImbalanceSettlement",
-  "description": "Liquidación al cierre del mercado (`closesAt`) de la ciudad que lo recibe. La central lee sus kWh en la wallet, calcula `coverage = kwhHeld - deficit`, quema todos sus kWh y mueve créditos según el signo de `coverage`: si es positivo, le paga `coverage × buybackPrice` y `total` es positivo; si es negativo, le cobra `|coverage| × imbalancePrice` y `total` es negativo (puede dejar saldo negativo); si es cero, quema sus kWh sin movimiento de créditos. Toda cuenta queda en 0 kWh. Es un hecho consumado, sin confirmación.",
+  "description": "Liquidación al cierre del mercado (`closesAt`) de la ciudad que lo recibe. La central lee sus kWh en la wallet, calcula `coverage = kwhHeld - deficit`, quema todos sus kWh y mueve créditos según el signo de `coverage`: si es positivo, le paga `coverage × buybackPrice` y `total` es positivo; si es negativo, le cobra `|coverage| × imbalancePrice` y `total` es negativo (puede dejar saldo negativo); si es cero, quema sus kWh sin movimiento de créditos. Toda cuenta queda en 0 kWh. Los precios y el déficit son los del `status-statement` del ciclo. A una ciudad que la central no alcanzó en el ciclo (no recibió su `status-statement`) no se le envía `imbalance-settlement`: sus kWh se queman sin movimiento de créditos. Es un hecho consumado, sin confirmación.",
   "x-amqp": {
     "exchange": "energy.x",
     "routingKey": "city.{CODE}",
@@ -53,7 +53,7 @@
         },
         "pricePerEnergy": {
           "$ref": "../common/cr.schema.json",
-          "description": "Créditos por kWh aplicados: `buybackPrice` del ciclo si `coverage > 0`, `imbalancePrice` si `coverage < 0`."
+          "description": "Créditos por kWh aplicados: `buybackPrice` del ciclo si `coverage >= 0` (con `coverage = 0`, `total` es 0), `imbalancePrice` si `coverage < 0`."
         },
         "total": {
           "$ref": "../common/cr.schema.json",

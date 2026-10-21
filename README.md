@@ -14,11 +14,11 @@ publicada están copiados en `reference/` y el CI comprueba que coinciden con lo
 Como dependencia git, fijada a un tag:
 
 ```bash
-npm install --save-dev "github:iic2173/energyshark-contracts#v3.0.0"
+npm install --save-dev "github:iic2173/energyshark-contracts#v3.0.1"
 ```
 
 El paquete no corre ningún script al instalarse. En otros lenguajes, clonen el repositorio en
-el tag (`git clone --branch v3.0.0 https://github.com/iic2173/energyshark-contracts.git`) y
+el tag (`git clone --branch v3.0.1 https://github.com/iic2173/energyshark-contracts.git`) y
 usen los archivos de `schemas/` y `wallet.openapi.yaml` con el validador de su lenguaje.
 
 ## Validar un mensaje

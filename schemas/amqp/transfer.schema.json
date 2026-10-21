@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://contracts.iic2173.org/energyshark/v3/amqp/transfer.schema.json",
   "title": "Transfer",
-  "description": "Financiamiento del ciclo: los créditos que la central acredita en la cuenta de su ciudad en la wallet al abrir la ventana, junto con el `status-statement`. Conserva la forma de la E1 (`data.quantity` y, sólo cuando hubo multa, el objeto `data.penalty`) y agrega `data.balanceAfter` y `data.creditLine`. Es el asiento `funding` de `/statement`. El `transfer` como pago de la E1 (el que traía `data.becauseOf`) se retira: en el protocolo v3 un `transfer` siempre es financiamiento.",
+  "description": "Financiamiento del ciclo: los créditos que la central acredita en la cuenta de su ciudad en la wallet al abrir la ventana, junto con el `status-statement`. Conserva la forma de la E1 (`data.quantity` y, sólo cuando hubo multa, el objeto `data.penalty`) y agrega `data.balanceAfter` y `data.creditLine`. En `/statement`, el asiento `funding` es el financiamiento bruto del ciclo; una multa es su propio asiento `penalty`, debitado en `validUntil` del ciclo multado y etiquetado con él, y `data.quantity` es el neto (bruto menos la multa); `data.balanceAfter` ya incluye ambos asientos. El `transfer` como pago de la E1 (el que traía `data.becauseOf`) se retira: en el protocolo v3 un `transfer` siempre es financiamiento.",
   "x-amqp": {
     "exchange": "energy.x",
     "routingKey": "city.{CODE}",
