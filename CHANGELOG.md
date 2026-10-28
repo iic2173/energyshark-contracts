@@ -3,6 +3,28 @@
 Una entrada por tag. Cada corrección del contrato publicado lleva su identificador `Cn` y su
 fecha.
 
+## v3.0.2 (2026-10-28)
+
+Parche aditivo: `GET /leaderboard` declara su `503`, y los mensajes que la central publica en
+`city.{CODE}` declaran su `user_id` `central`. Ningún schema cambia un campo, un `required`, un
+`enum` ni un `reason`; todo ejemplo de v3.0.1 sigue validando.
+
+Correcciones incorporadas:
+
+- C22 (2026-10-25): mientras la central no haya calculado la tabla por primera vez tras
+  reiniciarse, `GET /leaderboard` responde `503` `WALLET_BUSY` con `Retry-After`, y nunca una
+  tabla en cero que no calculó; como es una lectura, se reintenta la misma consulta después de
+  `Retry-After`. El periodo de puntaje cuenta todo ciclo cuyo `opensAt` es igual o posterior a
+  la apertura del mercado de producción; un ciclo entra en el puntaje de una ciudad al liquidarse
+  el cierre de esa ciudad, y los asientos de ese ciclo registrados después se suman al
+  registrarse; una ciudad sin ciclos computados tiene `score` 0, `cyclesComputed` 0 y una
+  posición calculada como la de todas; los empates comparten posición (1, 1, 3), sin desempate;
+  la clave de `MET` recibe su propia fila sin entrar en la tabla ni mover la posición de nadie.
+- C23 (2026-10-28): todo mensaje que la central publica en la cola `city.{CODE}`, eventos de la
+  wallet (`swap-*`) incluidos, llega con la propiedad AMQP `user_id` `central`, y verificarlo es
+  opcional; `x-amqp.userId` vale `central` en esos once schemas en vez de `none`, que se leía
+  como "sin `user_id`". `market-closed` sigue en `none`: llega sin `user_id`.
+
 ## v3.0.1 (2026-10-21)
 
 Parche de descripciones: sin cambios de forma. Ningún schema cambia un campo, un `required`,

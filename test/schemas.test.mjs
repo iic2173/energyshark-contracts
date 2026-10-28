@@ -116,7 +116,10 @@ describe('schemas/', () => {
       if (!Array.isArray(x.receivers) || x.receivers.length === 0 || x.receivers.some((r) => typeof r !== 'string' || r === '')) {
         failures.push(`${rel}: x-amqp.receivers debe ser un arreglo no vacío de patrones de cola`);
       }
-      if (!['required', 'none'].includes(x.userId)) failures.push(`${rel}: x-amqp.userId "${x.userId}" no es required ni none`);
+      if (!['required', 'central', 'none'].includes(x.userId)) failures.push(`${rel}: x-amqp.userId "${x.userId}" no es required, central ni none`);
+      // Mecánica §2 (C23): lo que la central y la wallet publican en `city.{CODE}` llega con
+      // `user_id` `central`; sólo `market-closed`, por `market`, viaja sin él.
+      if (x.userId === 'central' && x.sender.includes('city')) failures.push(`${rel}: x-amqp.userId central en un mensaje que envía una ciudad`);
     }
     assert.deepEqual(failures, []);
   });

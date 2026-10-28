@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Wallet EnergyShark
-  version: 3.0.1
+  version: 3.0.2
   description: >-
     API REST de la wallet de EnergyShark (E2, protocolo v3). Transcribe la "Referencia de la
     API v3" del curso; los cuerpos se describen con los schemas JSON de este repositorio
@@ -636,6 +636,28 @@ paths:
       description: >-
         La fila propia de la tabla: `score`, ciclos computados y posición, sin desglose de las
         demás ciudades. Se recalcula a cada cierre de ciclo.
+
+
+        El periodo de puntaje cuenta todo ciclo cuyo `opensAt` es igual o posterior a la
+        apertura del mercado de producción (la fecha publicada en el enunciado), sin otro límite
+        que el cierre de la entrega. Un ciclo entra en el puntaje de una ciudad cuando la central
+        liquidó el cierre de esa ciudad en ese ciclo, sin esperar a las demás ciudades; los
+        asientos de ese ciclo que se registran después (la multa por reporte faltante, o el
+        transporte de un swap tardío) entran apenas se registran. Una ciudad sin ciclos
+        computados tiene `score` 0 y `cyclesComputed` 0, y su `position` se calcula como la de
+        todas; si `Σ |baseline|` es 0, el `score` es 0. La posición es la de un ranking de
+        competencia: ciudades con el mismo `score` comparten posición y la siguiente salta
+        (1, 1, 3); no hay desempate.
+
+
+        `MET` no entra en la tabla ni mueve la posición de ninguna ciudad. Con la clave de `MET`,
+        la respuesta es la fila de `MET`, calculada con la misma fórmula, con `position` igual a
+        1 más el número de ciudades con `score` estrictamente mayor.
+
+
+        Mientras la central no haya calculado la tabla por primera vez tras reiniciarse, la
+        respuesta es `503` `WALLET_BUSY` con `Retry-After`, igual que la wallet ocupada; nunca
+        una tabla en cero que no calculó.
       responses:
         '200':
           description: El puntaje de la ciudad dueña de la clave.
@@ -651,10 +673,38 @@ paths:
                     score: 0.0342
                     cyclesComputed: 412
                     position: 3
+                sin-ciclos-computados:
+                  summary: Antes del primer cierre del periodo, todas empatadas en 0
+                  value:
+                    cityId: COR
+                    score: 0
+                    cyclesComputed: 0
+                    position: 1
         '401':
           $ref: '#/components/responses/Unauthorized'
         '429':
           $ref: '#/components/responses/RateLimited'
+        '503':
+          description: >-
+            `WALLET_BUSY`: la central todavía no calculó la tabla desde que se reinició, y no
+            publica una tabla que no calculó. Es una lectura: no hay nada que aceptar ni
+            `Idempotency-Key` que repetir; reintenten la misma consulta después de lo que indica
+            `Retry-After`.
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/json:
+              schema:
+                $ref: ./schemas/wallet/http-error.schema.json
+              examples:
+                tablaSinCalcular:
+                  summary: Tabla aún sin calcular tras un reinicio
+                  value:
+                    reason: WALLET_BUSY
+                    code: 503
+                    data:
+                      message: The wallet is busy and accepted nothing; retry after Retry-After seconds.
   /.well-known/jwks.json:
     servers:
       - url: https://wallet.iic2173.org

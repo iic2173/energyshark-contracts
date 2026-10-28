@@ -8,7 +8,7 @@
     "routingKey": "city.{CODE}",
     "sender": ["wallet"],
     "receivers": ["city.{quien intentó la operación}", "city.{proponente} (accept fallido)"],
-    "userId": "none"
+    "userId": "central"
   },
   "allOf": [
     { "$ref": "../common/envelope.schema.json" },

@@ -14,11 +14,11 @@ publicada están copiados en `reference/` y el CI comprueba que coinciden con lo
 Como dependencia git, fijada a un tag:
 
 ```bash
-npm install --save-dev "github:iic2173/energyshark-contracts#v3.0.1"
+npm install --save-dev "github:iic2173/energyshark-contracts#v3.0.2"
 ```
 
 El paquete no corre ningún script al instalarse. En otros lenguajes, clonen el repositorio en
-el tag (`git clone --branch v3.0.1 https://github.com/iic2173/energyshark-contracts.git`) y
+el tag (`git clone --branch v3.0.2 https://github.com/iic2173/energyshark-contracts.git`) y
 usen los archivos de `schemas/` y `wallet.openapi.yaml` con el validador de su lenguaje.
 
 ## Validar un mensaje
@@ -101,6 +101,14 @@ no viene.
 no un campo del cuerpo (por eso aparece sólo en `x-amqp.userId`). El receptor, sea la central u
 otra ciudad, compara `user_id` con el `cityId` del mensaje y responde `nack`
 `IDENTITY_MISMATCH` (403) si no corresponde o si falta.
+
+**`user_id` en los mensajes de la central.** Todo mensaje que la central publica en la cola
+`city.{CODE}`, eventos de la wallet (`swap-*`) incluidos, llega con `user_id` `central`
+(`x-amqp.userId` `central`). El broker rechaza un publish cuyo `user_id` no es el usuario
+autenticado de esa conexión, así que ese valor sólo puede venir de la central. Verificarlo es
+opcional; uno que llega a `city.{CODE}` sin `user_id`, o con otro valor, no lo publicó la central
+y puede descartarse sin respuesta. `market-closed` llega sin `user_id` (`x-amqp.userId` `none`):
+viaja por `market` con routing key `market.closed`, que ninguna ciudad tiene permiso de usar.
 
 **Tipos retirados.** `negotiation-proposal`, `give`, `take`, `transfer` como pago y
 `demand-statement` ya no existen en el protocolo v3. A un mensaje de ciudad con uno de esos
@@ -190,9 +198,9 @@ Generada desde `x-amqp` por `npm run render:table`; el CI verifica que esté al 
 | `bid` | `energy.x` | `city.{vendedor}` | city | `city.{vendedor}` | obligatorio | abierto | [amqp/bid.schema.json](schemas/amqp/bid.schema.json) |
 | `bid-accepted` | `energy.x` | `city.{comprador}` | city | `city.{comprador}` | obligatorio | abierto | [amqp/bid-accepted.schema.json](schemas/amqp/bid-accepted.schema.json) |
 | `bid-rejected` | `energy.x` | `city.{comprador}` | city | `city.{comprador}` | obligatorio | abierto | [amqp/bid-rejected.schema.json](schemas/amqp/bid-rejected.schema.json) |
-| `distance-table` | `energy.x` | `city.{CODE}` | central | `city.{CODE}` | no | cerrado | [amqp/distance-table.schema.json](schemas/amqp/distance-table.schema.json) |
-| `error` | `energy.x` | `city.{CODE}` | central | `city.{CODE}` | no | cerrado | [amqp/error.schema.json](schemas/amqp/error.schema.json) |
-| `imbalance-settlement` | `energy.x` | `city.{CODE}` | central | `city.{CODE}` | no | cerrado | [amqp/imbalance-settlement.schema.json](schemas/amqp/imbalance-settlement.schema.json) |
+| `distance-table` | `energy.x` | `city.{CODE}` | central | `city.{CODE}` | `central` (verificarlo es opcional) | cerrado | [amqp/distance-table.schema.json](schemas/amqp/distance-table.schema.json) |
+| `error` | `energy.x` | `city.{CODE}` | central | `city.{CODE}` | `central` (verificarlo es opcional) | cerrado | [amqp/error.schema.json](schemas/amqp/error.schema.json) |
+| `imbalance-settlement` | `energy.x` | `city.{CODE}` | central | `city.{CODE}` | `central` (verificarlo es opcional) | cerrado | [amqp/imbalance-settlement.schema.json](schemas/amqp/imbalance-settlement.schema.json) |
 | `market-closed` | `market` | `market.closed` | central | `market.{CODE} (todas)` | no | cerrado | [amqp/market-closed.schema.json](schemas/amqp/market-closed.schema.json) |
 | `nack` | `energy.x` | `city.{CODE} \| central` | central, city | `city.{CODE}`, `central` | obligatorio | central cerrado, ciudad abierto | [amqp/nack.schema.json](schemas/amqp/nack.schema.json) |
 | `negotiation-report` | `energy.x` | `central` | city | `central` | obligatorio | abierto | [amqp/negotiation-report.schema.json](schemas/amqp/negotiation-report.schema.json) |
@@ -200,14 +208,14 @@ Generada desde `x-amqp` por `npm run render:table`; el CI verifica que esté al 
 | `offer-updated` | `market` | `market.offer.{CODE}` | city | `market.{CODE} (todas)` | obligatorio | abierto | [amqp/offer-updated.schema.json](schemas/amqp/offer-updated.schema.json) |
 | `offer-withdrawn` | `market` | `market.offer.{CODE}` | city | `market.{CODE} (todas)` | obligatorio | abierto | [amqp/offer-withdrawn.schema.json](schemas/amqp/offer-withdrawn.schema.json) |
 | `request` | `energy.x` | `central` | city | `central` | obligatorio | abierto | [amqp/request.schema.json](schemas/amqp/request.schema.json) |
-| `status-statement` | `energy.x` | `city.{CODE}` | central | `city.{CODE}` | no | cerrado | [amqp/status-statement.schema.json](schemas/amqp/status-statement.schema.json) |
-| `swap-cancelled` | `energy.x` | `city.{CODE}` | wallet | `city.{proponente}` | no | cerrado | [amqp/swap-cancelled.schema.json](schemas/amqp/swap-cancelled.schema.json) |
-| `swap-expired` | `energy.x` | `city.{CODE}` | wallet | `city.{proponente}` | no | cerrado | [amqp/swap-expired.schema.json](schemas/amqp/swap-expired.schema.json) |
-| `swap-proposed` | `energy.x` | `city.{CODE}` | wallet | `city.{proponente}` | no | cerrado | [amqp/swap-proposed.schema.json](schemas/amqp/swap-proposed.schema.json) |
-| `swap-rejected` | `energy.x` | `city.{CODE}` | wallet | `city.{quien intentó la operación}`, `city.{proponente} (accept fallido)` | no | cerrado | [amqp/swap-rejected.schema.json](schemas/amqp/swap-rejected.schema.json) |
-| `swap-settled` | `energy.x` | `city.{CODE}` | wallet | `city.{proponente}`, `city.{aceptante}` | no | cerrado | [amqp/swap-settled.schema.json](schemas/amqp/swap-settled.schema.json) |
-| `trade-recorded` | `energy.x` | `city.{CODE}` | central | `city.{comprador}`, `city.{vendedor}` | no | cerrado | [amqp/trade-recorded.schema.json](schemas/amqp/trade-recorded.schema.json) |
-| `transfer` | `energy.x` | `city.{CODE}` | central | `city.{CODE}` | no | cerrado | [amqp/transfer.schema.json](schemas/amqp/transfer.schema.json) |
+| `status-statement` | `energy.x` | `city.{CODE}` | central | `city.{CODE}` | `central` (verificarlo es opcional) | cerrado | [amqp/status-statement.schema.json](schemas/amqp/status-statement.schema.json) |
+| `swap-cancelled` | `energy.x` | `city.{CODE}` | wallet | `city.{proponente}` | `central` (verificarlo es opcional) | cerrado | [amqp/swap-cancelled.schema.json](schemas/amqp/swap-cancelled.schema.json) |
+| `swap-expired` | `energy.x` | `city.{CODE}` | wallet | `city.{proponente}` | `central` (verificarlo es opcional) | cerrado | [amqp/swap-expired.schema.json](schemas/amqp/swap-expired.schema.json) |
+| `swap-proposed` | `energy.x` | `city.{CODE}` | wallet | `city.{proponente}` | `central` (verificarlo es opcional) | cerrado | [amqp/swap-proposed.schema.json](schemas/amqp/swap-proposed.schema.json) |
+| `swap-rejected` | `energy.x` | `city.{CODE}` | wallet | `city.{quien intentó la operación}`, `city.{proponente} (accept fallido)` | `central` (verificarlo es opcional) | cerrado | [amqp/swap-rejected.schema.json](schemas/amqp/swap-rejected.schema.json) |
+| `swap-settled` | `energy.x` | `city.{CODE}` | wallet | `city.{proponente}`, `city.{aceptante}` | `central` (verificarlo es opcional) | cerrado | [amqp/swap-settled.schema.json](schemas/amqp/swap-settled.schema.json) |
+| `trade-recorded` | `energy.x` | `city.{CODE}` | central | `city.{comprador}`, `city.{vendedor}` | `central` (verificarlo es opcional) | cerrado | [amqp/trade-recorded.schema.json](schemas/amqp/trade-recorded.schema.json) |
+| `transfer` | `energy.x` | `city.{CODE}` | central | `city.{CODE}` | `central` (verificarlo es opcional) | cerrado | [amqp/transfer.schema.json](schemas/amqp/transfer.schema.json) |
 <!-- amqp-table:end -->
 
 ## El token

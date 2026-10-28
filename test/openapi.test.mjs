@@ -301,7 +301,7 @@ describe('wallet.openapi.yaml', () => {
     assert.deepEqual(failures, []);
   });
 
-  /** Operaciones de la wallet según la mecánica §5.3 y la Referencia de la API v3:
+  /** Operaciones de la wallet según la mecánica §5.3 y §11 (C22) y la Referencia de la API v3:
    * operationId -> [método, ruta, status declarados]. */
   const WRITE_STATUSES = ['200', '202', '401', '404', '422', '429', '503'];
   const EXPECTED_OPERATIONS = {
@@ -311,7 +311,7 @@ describe('wallet.openapi.yaml', () => {
     getSwap: ['get', '/swaps/{swapId}', ['200', '401', '404', '429']],
     getBalance: ['get', '/balance', ['200', '401', '429']],
     getStatement: ['get', '/statement', ['200', '401', '429']],
-    getLeaderboard: ['get', '/leaderboard', ['200', '401', '429']],
+    getLeaderboard: ['get', '/leaderboard', ['200', '401', '429', '503']],
     getJwks: ['get', '/.well-known/jwks.json', ['200']],
   };
 

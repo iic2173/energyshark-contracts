@@ -44,7 +44,7 @@ export function renderTable() {
           code(x.routingKey),
           x.sender.map(cell).join(', '),
           x.receivers.map(code).join(', '),
-          x.userId === 'required' ? 'obligatorio' : 'no',
+          x.userId === 'required' ? 'obligatorio' : x.userId === 'central' ? '`central` (verificarlo es opcional)' : 'no',
           closedness(x.sender),
           `[${cell(rel)}](schemas/${rel})`,
         ].join(' | ') +
